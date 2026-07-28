@@ -1,0 +1,178 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------ *
+ * DSA Dojo — design tokens
+ *
+ * Encoding colours are NOT decorative. The three visualiser state hues
+ * (cursor / scan / match) were validated with the dataviz palette
+ * validator at all-pairs in both modes:
+ *   dark  #3987e5 #d95926 #199e70  → worst CVD ΔE 9.4, normal 20.9
+ *   light #2a78d6 #eb6834 #1baf7a  → worst CVD ΔE 9.2, normal 24.0
+ * A fourth encoding hue fails the gate, so "eliminated" is expressed by
+ * neutral + opacity + strike-through, never by a new colour. Critical is
+ * a reserved status colour and always ships with an icon or label.
+ * Tier badges use an ORDINAL single-hue blue ramp, not categorical hues.
+ * ------------------------------------------------------------------ */
+
+/* `static` is required: Tailwind v4 prunes theme variables that no utility
+   class references, and several of these (the tier ramp, viz-idle) are only
+   ever read from inline styles and JS. Without it they resolve to empty. */
+@theme static {
+  --font-sans:
+    'Inter var', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  --radius-card: 1rem;
+
+  --color-bg: #08090b;
+  --color-surface-1: #0f1114;
+  --color-surface-2: #161a1f;
+  --color-surface-3: #1e232a;
+  --color-line: #262c34;
+  --color-line-strong: #333b45;
+
+  --color-ink: #f3f5f8;
+  --color-ink-2: #a3acb9;
+  --color-ink-3: #6c7683;
+
+  --color-viz-cursor: #3987e5;
+  --color-viz-scan: #d95926;
+  --color-viz-match: #199e70;
+  --color-viz-critical: #e66767;
+  --color-viz-idle: #39414b;
+
+  --color-tier-0: #cde2fb;
+  --color-tier-1: #9ec5f4;
+  --color-tier-2: #6da7ec;
+  --color-tier-3: #3987e5;
+  --color-tier-4: #256abf;
+  --color-tier-5: #184f95;
+}
+
+:root[data-theme='light'] {
+  --color-bg: #fbfbfa;
+  --color-surface-1: #ffffff;
+  --color-surface-2: #f5f6f4;
+  --color-surface-3: #eceee9;
+  --color-line: #e3e5e1;
+  --color-line-strong: #cfd2cc;
+
+  --color-ink: #0d0f12;
+  --color-ink-2: #4d545e;
+  --color-ink-3: #79808b;
+
+  --color-viz-cursor: #2a78d6;
+  --color-viz-scan: #eb6834;
+  --color-viz-match: #1baf7a;
+  --color-viz-critical: #e34948;
+  --color-viz-idle: #d5d8d2;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  :root[data-theme='light'] {
+    color-scheme: light;
+  }
+
+  * {
+    border-color: var(--color-line);
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-viz-cursor);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-viz-cursor) 35%, transparent);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 99px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ink-3);
+    background-clip: content-box;
+  }
+}
+
+@layer utilities {
+  .surface {
+    background-color: var(--color-surface-1);
+    border: 1px solid var(--color-line);
+  }
+
+  .glass {
+    background-color: color-mix(in oklab, var(--color-surface-1) 72%, transparent);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      color-mix(in oklab, var(--color-ink) 8%, transparent) 1px,
+      transparent 0
+    );
+    background-size: 22px 22px;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+/* Animation is reinforcement here — never the only channel carrying
+   meaning — so honouring this setting loses no information. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
