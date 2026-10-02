@@ -193,37 +193,46 @@ the `halfway` / `complete` badges — existing users may see percentages move.
 
 ### Add a subject
 
-`src/data/subjects.ts` is the registry:
+`src/data/subjects.ts` is the registry. A `Subject` carries its `tiers` (DSA calls them
+tiers, Trading calls them modules — same shape), optional `phases` (an empty list hides the
+"By week" view), its own `badges` (`src/data/badges.ts`), its own `glossary`, and `copy` —
+the words the shared views use for it ("Tier"/"Module", the dashboard heading, the
+"Why that complexity" / "What the evidence says" heading). Append an entry and it gets its
+own routes (`#/<id>/…`), progress namespace, badges, glossary, Arena and a place in the
+subject switcher (sidebar on desktop, a native select in the phone header).
 
-```ts
-export const SUBJECTS: Subject[] = [
-  {
-    id: "dsa",
-    name: "…",
-    short: "DSA",
-    tagline: "…",
-    tiers: TIERS,
-    phases: PHASES,
-    topics: ALL_TOPICS,
-    topicById: TOPIC_BY_ID,
-  },
-  // new subject here
-];
+Rules that came out of adding Trading concepts:
+
+- **Badge ids are persisted and synced by set union** — never rename or reuse one. DSA's
+  list is unchanged from when badges were global.
+- **Glossaries are per subject** because words collide: DSA's "node" is a tree node, and
+  trading's "high-volume node" must not link to it. `Prose` reads the glossary from
+  `SubjectContext`, which `App` provides.
+- **`subjects.ts` imports with `.ts` extensions** so `scripts/*.mts` can load every subject
+  under Node. Keep anything it imports free of React and DOM.
+
+### Trading concepts
+
+Content lives in `src/data/trading/`: `curriculum.ts` (modules), `modules/<name>.ts` (a
+`Tier`), `topics/<id>.ts` (one file per lesson), `labs.ts`, `glossary.ts`. The profile maths
+is `src/engine/trading/profile.ts` — the single implementation the visualisers, lab expected
+values and audit scripts all use. Synthetic sessions are generated deterministically by
+`engine/trading/sessions.ts` from the scenario list in `engine/trading/scenarios.ts`; every
+one is synthetic and labelled so. Candles and session profiles are drawn by **Emberwick**
+(`emberwick` + `emberwick/profiles`, lazy-loaded so DSA does not carry it) through the
+`chart` frame panel; per-bin algorithm steps use the DOM `ladder` panel. Candles are
+neutral (hollow up, filled down) so no hue beyond the three validated state hues appears.
+
+Adding a module: a new `modules/<name>.ts` with its topics, one line in `MODULES`, a badge
+in `TRADING_BADGES`. The writing brief for the first module, with the evidence rules, is
+`docs/trading/writing-brief.md`; sources and their reliability labels are in
+`docs/trading/sources.md`.
+
+After touching anything under `engine/trading/` or a trading scenario:
+
+```bash
+node --experimental-strip-types scripts/profile-check.mts   # maths vs Emberwick, worked example, every scenario's claim
 ```
-
-Build its `Tier[]` / `Phase[]` the way `curriculum.ts` does and append an entry. It
-immediately gets its own routes (`#/<id>/…`), progress namespace, badges and Arena. Nothing
-else changes — that boundary exists precisely so this stays a one-file edit.
-
-Two things to decide when you do:
-
-- **Badges are currently tier-shaped** (`Master every Tier 0 topic`). A subject with a
-  different structure needs its own `BadgeDef[]`; today `BADGES` in `store/progress.ts` is
-  global. Making badges a property of `Subject` is the natural refactor.
-- **There is no subject switcher UI.** The sidebar shows the current subject's short name.
-  A second subject needs a picker — the routing already supports it.
-
----
 
 ## 5. Auditing coverage
 
@@ -233,7 +242,7 @@ The tables above came from this. Re-run after content changes:
 node --experimental-strip-types scripts/coverage.mts
 ```
 
-It parses `registry.ts` as text (Node's ESM resolver wants file extensions that the
+It covers every subject. It parses `registry.ts` as text (Node's ESM resolver wants file extensions that the
 bundler-style imports do not have) and imports `curriculum.ts` directly, so it always
 reflects the source rather than a hand-maintained list.
 

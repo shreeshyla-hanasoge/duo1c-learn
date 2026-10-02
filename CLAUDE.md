@@ -104,6 +104,14 @@ node --experimental-strip-types scripts/coverage.mts   # topic/quiz/visualiser c
 node --experimental-strip-types scripts/labs.mts       # every lab's solution vs its own tests AND gate
 ```
 
+Trading concepts (second subject) lives in `src/data/trading/` with its maths in
+`src/engine/trading/`; see docs/content.md. After touching either, also run
+`node --experimental-strip-types scripts/profile-check.mts` — it checks the maths against
+Emberwick's own `computeValueArea`, the 1 Oct 2026 worked example, and that every synthetic
+scenario still shows what its lesson claims. Trading prose follows
+`docs/trading/writing-brief.md`: education not advice, evidence labelled, synthetic data
+labelled.
+
 `scripts/labs.mts` is not optional after touching a lab. It caught two wrong expected
 values that had been reasoned through by eye and were still wrong — including the exact
 BST mistake the topic's own quiz warns about.

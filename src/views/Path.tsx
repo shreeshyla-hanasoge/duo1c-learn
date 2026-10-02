@@ -25,12 +25,11 @@ export function Path({ subject }: { subject: Subject }) {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">The path</h1>
-          <p className="mt-1 text-sm text-ink-2">
-            Six tiers of topics, or the same material laid out as the 24-week
-            timeline.
-          </p>
+          <p className="mt-1 text-sm text-ink-2">{subject.copy.pathIntro}</p>
         </div>
 
+        {/* A subject with no timeline has nothing to show "by week". */}
+        {subject.phases.length > 0 && (
         <div className="flex rounded-xl border border-line bg-surface-2 p-1">
           {(["tiers", "weeks"] as View[]).map((v) => (
             <button
@@ -49,10 +48,13 @@ export function Path({ subject }: { subject: Subject }) {
                   style={{ background: "var(--color-surface-3)" }}
                 />
               )}
-              {v === "tiers" ? "By tier" : "By week"}
+              {v === "tiers"
+                ? `By ${subject.copy.unit.toLowerCase()}`
+                : "By week"}
             </button>
           ))}
         </div>
+        )}
       </div>
 
       <motion.div
@@ -61,7 +63,7 @@ export function Path({ subject }: { subject: Subject }) {
         animate={{ y: 0 }}
         transition={spring}
       >
-        {view === "tiers" ? (
+        {view === "tiers" || subject.phases.length === 0 ? (
           <TierView subject={subject} />
         ) : (
           <WeekView subject={subject} />
@@ -104,8 +106,9 @@ function TierView({ subject }: { subject: Subject }) {
 
             {!unlocked && (
               <p className="mb-3 rounded-lg border border-dashed border-line px-3 py-2 text-xs text-ink-3">
-                Locked — start half of Tier {tier.id - 1} to open this. You can
-                still read everything; only the mastery credit waits.
+                Locked — start half of {subject.copy.unit} {tier.id - 1} to open
+                this. You can still read everything; only the mastery credit
+                waits.
               </p>
             )}
 

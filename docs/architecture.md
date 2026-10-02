@@ -302,8 +302,12 @@ working. `href(page, subjectId)` defaults the subject so in-subject links stay t
 
 ### Subjects
 
-`src/data/subjects.ts` is the registry. Routes, the progress namespace, badges and Arena are
-all keyed by subject id. Adding one is described in [content.md](./content.md).
+`src/data/subjects.ts` is the registry: DSA and Trading concepts. Routes, the progress
+namespace, badges, glossary, Arena and the wording the shared views use are all keyed by or
+carried on the subject. Leaf components (`Prose`, `TierBadge`) read the current subject from
+`SubjectContext` rather than having it threaded through every caller. The sync payload was
+already `subjects: Record<id, …>`, so a second subject needed no backend change. Adding one
+is described in [content.md](./content.md).
 
 ---
 

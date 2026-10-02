@@ -1,6 +1,7 @@
 import { forwardRef, type ReactNode } from "react";
 import { motion } from "motion/react";
 import { cn, spring, springSnap } from "../lib/ui";
+import { useSubject } from "./SubjectContext";
 
 /* ---- Buttons ------------------------------------------------------ */
 
@@ -106,6 +107,8 @@ export function TierBadge({
   tier: number;
   className?: string;
 }) {
+  // "T0" in DSA, "M1" in Trading — the subject names its own units.
+  const prefix = useSubject().copy.unitShort;
   return (
     <span
       className={cn(
@@ -117,7 +120,8 @@ export function TierBadge({
         color: tier <= 2 ? "#0b0d10" : "#ffffff",
       }}
     >
-      T{tier}
+      {prefix}
+      {tier}
     </span>
   );
 }

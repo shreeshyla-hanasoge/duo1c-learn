@@ -7,6 +7,7 @@ import type {
 import { Card, SectionTitle } from "../../components/ui";
 import { Prose } from "../../components/Prose";
 import { itemVariants, spring } from "../../lib/ui";
+import { useSubject } from "../../components/SubjectContext";
 
 /**
  * The long-form explainer, rendered only when a topic has been upgraded.
@@ -15,6 +16,7 @@ import { itemVariants, spring } from "../../lib/ui";
  */
 
 export function DeepSections({ learn }: { learn: LearnDeepData }) {
+  const { copy } = useSubject();
   return (
     <>
       <motion.section variants={itemVariants}>
@@ -65,8 +67,8 @@ export function DeepSections({ learn }: { learn: LearnDeepData }) {
       </motion.section>
 
       <motion.section variants={itemVariants}>
-        <SectionTitle hint="the argument, not the answer">
-          Why that complexity
+        <SectionTitle hint={copy.derivationHint}>
+          {copy.derivationTitle}
         </SectionTitle>
         <Card className="flex gap-3.5 p-4">
           <Sigma
@@ -127,13 +129,12 @@ export function DeepSections({ learn }: { learn: LearnDeepData }) {
 }
 
 export function RealWorld({ cases }: { cases: RealWorldCase[] }) {
+  const { copy } = useSubject();
   const yours = cases.filter((c) => c.kind === "yours").length;
   return (
     <motion.section variants={itemVariants}>
       <SectionTitle
-        hint={
-          yours ? `${yours} from your own repos` : "where it earns its keep"
-        }
+        hint={yours ? copy.yoursHint(yours) : "where it earns its keep"}
       >
         In the wild
       </SectionTitle>

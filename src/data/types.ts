@@ -12,8 +12,24 @@
  */
 export type Difficulty = "recall" | "apply" | "judge";
 
+/**
+ * A small volume profile drawn above a quiz question, for questions that
+ * ask the reader to READ a profile. Rows are given lowest price first.
+ */
+export interface QuizFigure {
+  lo: number;
+  step: number;
+  bins: number[];
+  /** Labelled horizontal lines, e.g. yesterday's VAH. Always drawn with text. */
+  lines?: { price: number; label: string }[];
+  /** Shade the 70% value area and mark the POC, computed from `bins`. */
+  showValueArea?: boolean;
+  caption?: string;
+}
+
 export interface QuizQ {
   q: string;
+  figure?: QuizFigure;
   options: string[];
   /** Index into `options`. */
   answer: number;

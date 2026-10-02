@@ -16,7 +16,7 @@ import { href, type Page, type Route } from "../lib/router";
 import { levelProgress, rankFor, useProgress } from "../store/progress";
 import { authEnabled, useAuth } from "../lib/auth";
 import { AccountBlock } from "./Account";
-import type { Subject } from "../data/subjects";
+import { SUBJECTS, type Subject } from "../data/subjects";
 import { cn, spring } from "../lib/ui";
 
 const NAV: { page: Page; label: string; icon: typeof Home }[] = [
@@ -48,8 +48,9 @@ export function Shell({
       {/* ---- Desktop sidebar ---- */}
       <aside className="sticky top-0 z-30 hidden h-screen w-64 shrink-0 flex-col border-r border-line bg-surface-1 p-5 lg:flex">
         <Brand subject={subject} />
+        <SubjectPills current={subject.id} />
 
-        <nav className="mt-8 flex flex-col gap-1">
+        <nav className="mt-6 flex flex-col gap-1">
           {NAV.map((item) => (
             <NavLink
               key={item.label}
@@ -107,8 +108,11 @@ export function Shell({
 
       {/* ---- Mobile header ---- */}
       <header className="glass sticky top-0 z-30 flex items-center justify-between border-b border-line px-4 py-3 lg:hidden">
-        <Brand subject={subject} compact />
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <Brand subject={subject} compact />
+          <SubjectSelect current={subject} />
+        </div>
+        <div className="flex shrink-0 items-center gap-3">
           <SyncDot />
           {streak > 0 && (
             <span className="flex items-center gap-1 font-mono text-xs text-ink-2">
@@ -226,6 +230,68 @@ function SyncDot() {
       <CloudOff size={13} style={{ color: "var(--color-viz-critical)" }} />
     );
   return <Cloud size={13} style={{ color: "var(--color-viz-match)" }} />;
+}
+
+/**
+ * The subject switcher. Links, not state: the subject lives in the hash, so
+ * switching is a navigation and the back button undoes it.
+ */
+function SubjectPills({ current }: { current: string }) {
+  if (SUBJECTS.length < 2) return null;
+  return (
+    <div className="mt-6 grid grid-cols-1 gap-1" aria-label="Subjects">
+      <p className="px-1 text-[10px] tracking-wide text-ink-3 uppercase">
+        Subjects
+      </p>
+      {SUBJECTS.map((s) => {
+        const on = s.id === current;
+        return (
+          <a
+            key={s.id}
+            href={href({ name: "dashboard" }, s.id)}
+            aria-current={on ? "page" : undefined}
+            className={cn(
+              "min-w-0 rounded-lg border px-3 py-2 text-xs transition-colors",
+              on
+                ? "border-line-strong bg-surface-2 text-ink"
+                : "border-transparent text-ink-3 hover:text-ink-2",
+            )}
+          >
+            <span className="block truncate font-medium">{s.short}</span>
+            <span className="block truncate text-[10px] text-ink-3">
+              {s.name}
+            </span>
+          </a>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * Phone-width switcher. A native <select> rather than a custom menu: it
+ * cannot get stuck open, needs no overlay, and the OS draws the picker.
+ */
+function SubjectSelect({ current }: { current: Subject }) {
+  if (SUBJECTS.length < 2) return null;
+  return (
+    <label className="relative min-w-0">
+      <span className="sr-only">Subject</span>
+      <select
+        value={current.id}
+        onChange={(e) => {
+          window.location.hash = href({ name: "dashboard" }, e.target.value);
+        }}
+        className="max-w-[7.5rem] truncate rounded-full border border-line bg-surface-2 py-1 pr-6 pl-2.5 text-[11px] font-medium text-ink"
+      >
+        {SUBJECTS.map((s) => (
+          <option key={s.id} value={s.id}>
+            {s.short}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
 }
 
 function Brand({ subject, compact }: { subject: Subject; compact?: boolean }) {

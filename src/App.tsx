@@ -6,6 +6,7 @@ import { authEnabled, useAuth } from "./lib/auth";
 import { startSync, stopSync } from "./lib/sync";
 import { getSubject } from "./data/subjects";
 import { Shell } from "./components/Shell";
+import { SubjectContext } from "./components/SubjectContext";
 import { Toaster } from "./components/Toaster";
 import { SignInPrompt } from "./components/SignInPrompt";
 import { pageVariants } from "./lib/ui";
@@ -46,6 +47,7 @@ export default function App() {
   }, [scrollKey]);
 
   return (
+    <SubjectContext.Provider value={subject}>
     <Shell route={route} subject={subject}>
       {/* Deliberately no <AnimatePresence mode="wait"> here. Page swaps are
           driven by the hash, which can change twice in a frame (a redirect, a
@@ -70,5 +72,6 @@ export default function App() {
       <Toaster />
       <SignInPrompt />
     </Shell>
+    </SubjectContext.Provider>
   );
 }

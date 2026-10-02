@@ -4,6 +4,7 @@ import { Check, ChevronRight, RotateCcw, X } from "lucide-react";
 import type { Topic } from "../../data/curriculum";
 import { Button, Card, Meter } from "../../components/ui";
 import { Prose } from "../../components/Prose";
+import { QuizFigure } from "../../components/viz/QuizFigure";
 import { spring, springSnap } from "../../lib/ui";
 import { useProgress, useTopicProgress } from "../../store/progress";
 import type { Subject } from "../../data/subjects";
@@ -168,6 +169,11 @@ export function Quiz({ subject, topic }: { subject: Subject; topic: Topic }) {
           >
             {q.q}
           </Prose>
+          {q.figure && (
+            <div className="mt-3">
+              <QuizFigure fig={q.figure} />
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">

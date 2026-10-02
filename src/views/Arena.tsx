@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { QuizQ } from "../data/curriculum";
 import type { Subject } from "../data/subjects";
+import { QuizFigure } from "../components/viz/QuizFigure";
 import {
   tierUnlocked,
   useProgress,
@@ -82,8 +83,9 @@ export function Arena({ subject }: { subject: Subject }) {
       <motion.div variants={itemVariants}>
         <h1 className="text-2xl font-semibold">Arena</h1>
         <p className="mt-1 text-sm text-ink-2">
-          Mixed questions drawn from every tier you have opened. No explanations
-          mid-run — this is the timed-practice half of week 24.
+          Mixed questions drawn from every{" "}
+          {subject.copy.unit.toLowerCase()} you have opened. No explanations
+          mid-run — this is timed recall, not teaching.
         </p>
       </motion.div>
 
@@ -107,7 +109,7 @@ export function Arena({ subject }: { subject: Subject }) {
         <StatTile
           label="Question pool"
           value={pool.length}
-          sub="from unlocked tiers"
+          sub={`from unlocked ${subject.copy.unit.toLowerCase()}s`}
         />
       </motion.div>
 
@@ -124,7 +126,7 @@ export function Arena({ subject }: { subject: Subject }) {
         />
         <ChallengeCard
           title="Survival"
-          detail={`${LIVES} lives, no clock. Questions climb through the tiers. One wrong answer costs a life.`}
+          detail={`${LIVES} lives, no clock. Questions climb through the ${subject.copy.unit.toLowerCase()}s. One wrong answer costs a life.`}
           icon={<Heart size={18} />}
           onStart={() => setMode("survival")}
           disabled={pool.length === 0}
@@ -425,6 +427,7 @@ function Run({
         </div>
 
         <h2 className="text-lg leading-snug font-medium">{q.q}</h2>
+        {q.figure && <QuizFigure fig={q.figure} />}
 
         <div className="flex flex-col gap-2">
           {q.options.map((opt, i) => {

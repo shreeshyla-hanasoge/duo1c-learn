@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { DEFAULT_SUBJECT_ID, getSubject, type Subject } from "../data/subjects";
+import {
+  isMastered,
+  masteredCount,
+  type ArenaResult,
+  type SubjectProgress,
+  type TopicProgress,
+} from "../data/progress-model";
 
 /* ------------------------------------------------------------------ *
  * Progression model
@@ -16,27 +23,13 @@ import { DEFAULT_SUBJECT_ID, getSubject, type Subject } from "../data/subjects";
  * material. That split is also exactly how the row is stored in DynamoDB.
  * ------------------------------------------------------------------ */
 
-export interface TopicProgress {
-  learned: boolean;
-  solved: boolean;
-  /** Best quiz score as a 0–1 fraction. */
-  quizBest: number;
-  quizAttempts: number;
-  masteredAt?: string;
-}
-
-export interface ArenaResult {
-  date: string;
-  score: number;
-  total: number;
-  seconds: number;
-}
-
-export interface SubjectProgress {
-  topics: Record<string, TopicProgress>;
-  badges: string[];
-  arena: ArenaResult[];
-}
+export type {
+  TopicProgress,
+  ArenaResult,
+  SubjectProgress,
+  BadgeDef,
+} from "../data/progress-model";
+export { isMastered, masteredCount } from "../data/progress-model";
 
 export type SyncStatus = "idle" | "syncing" | "synced" | "error";
 
@@ -81,8 +74,6 @@ export const XP = {
   masteryBonus: 60,
   arenaPerCorrect: 15,
 } as const;
-
-const MASTERY_QUIZ_THRESHOLD = 0.8;
 
 export function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
@@ -159,25 +150,6 @@ export function subjectOf(
   return s.subjects[subjectId] ?? emptySubject();
 }
 
-export function isMastered(p?: TopicProgress): boolean {
-  return Boolean(
-    p && p.learned && p.solved && p.quizBest >= MASTERY_QUIZ_THRESHOLD,
-  );
-}
-
-export function masteredCount(sp: SubjectProgress): number {
-  return Object.values(sp.topics).filter(isMastered).length;
-}
-
-function tierMastered(
-  sp: SubjectProgress,
-  subject: Subject,
-  tier: number,
-): boolean {
-  const topics = subject.tiers.find((t) => t.id === tier)?.topics ?? [];
-  return topics.length > 0 && topics.every((t) => isMastered(sp.topics[t.id]));
-}
-
 /** A tier opens once half the previous tier has been touched. */
 export function tierUnlocked(
   sp: SubjectProgress,
@@ -228,101 +200,6 @@ export function overallStats(sp: SubjectProgress, subject: Subject) {
     pct: total ? mastered / total : 0,
   };
 }
-
-/* ---- Badges ------------------------------------------------------- */
-
-export interface BadgeDef {
-  id: string;
-  name: string;
-  hint: string;
-  test: (ctx: {
-    sp: SubjectProgress;
-    subject: Subject;
-    streak: number;
-  }) => boolean;
-}
-
-export const BADGES: BadgeDef[] = [
-  {
-    id: "first-blood",
-    name: "First Blood",
-    hint: "Master your first topic",
-    test: ({ sp }) => masteredCount(sp) >= 1,
-  },
-  {
-    id: "foundations",
-    name: "Reflexes",
-    hint: "Master every Tier 0 topic",
-    test: ({ sp, subject }) => tierMastered(sp, subject, 0),
-  },
-  {
-    id: "structures",
-    name: "Toolmaker",
-    hint: "Master every Tier 1 topic",
-    test: ({ sp, subject }) => tierMastered(sp, subject, 1),
-  },
-  {
-    id: "graphs",
-    name: "Cartographer",
-    hint: "Master every Tier 2 topic",
-    test: ({ sp, subject }) => tierMastered(sp, subject, 2),
-  },
-  {
-    id: "dp",
-    name: "Optimal Substructure",
-    hint: "Master every Tier 3 topic",
-    test: ({ sp, subject }) => tierMastered(sp, subject, 3),
-  },
-  {
-    id: "advanced",
-    name: "Deep Cuts",
-    hint: "Master every Tier 4 topic",
-    test: ({ sp, subject }) => tierMastered(sp, subject, 4),
-  },
-  {
-    id: "judgment",
-    name: "Judgment",
-    hint: "Master every Tier 5 topic",
-    test: ({ sp, subject }) => tierMastered(sp, subject, 5),
-  },
-  {
-    id: "flawless",
-    name: "Flawless",
-    hint: "Score 100% on any quiz",
-    test: ({ sp }) => Object.values(sp.topics).some((t) => t.quizBest === 1),
-  },
-  {
-    id: "streak-7",
-    name: "Seven Days",
-    hint: "Practise 7 days in a row",
-    test: ({ streak }) => streak >= 7,
-  },
-  {
-    id: "streak-30",
-    name: "Consistency",
-    hint: "Practise 30 days in a row",
-    test: ({ streak }) => streak >= 30,
-  },
-  {
-    id: "arena-10",
-    name: "Gauntlet",
-    hint: "Score 10+ in a single Arena run",
-    test: ({ sp }) => sp.arena.some((a) => a.score >= 10),
-  },
-  {
-    id: "halfway",
-    name: "Halfway",
-    hint: "Master half of all topics",
-    test: ({ sp, subject }) =>
-      masteredCount(sp) >= Math.ceil(subject.topics.length / 2),
-  },
-  {
-    id: "complete",
-    name: "Shodan",
-    hint: "Master every topic in this subject",
-    test: ({ sp, subject }) => masteredCount(sp) === subject.topics.length,
-  },
-];
 
 /* ---- Store -------------------------------------------------------- */
 
@@ -383,7 +260,7 @@ export const useProgress = create<ProgressState>()(
           mutate?.(sp, draft);
 
           const subject = getSubject(subjectId);
-          const earned = BADGES.filter(
+          const earned = subject.badges.filter(
             (b) =>
               !sp.badges.includes(b.id) &&
               b.test({ sp, subject, streak: draft.streak }),

@@ -88,6 +88,8 @@ export function VizPlayer({
       const el = document.activeElement;
       if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)
         return;
+      // A focused Emberwick chart uses the arrows to pan itself.
+      if (el instanceof HTMLElement && el.closest("[data-emberwick]")) return;
       if (e.key === " ") {
         e.preventDefault();
         setPlaying((p) => !p);
@@ -198,8 +200,10 @@ export function VizPlayer({
           ))}
         </div>
 
-        <div className="ml-auto hidden items-center gap-3 sm:flex">
-          {STATE_LABELS.map((l) => (
+        {/* Shown at every width: the legend is what makes colour never the
+            only channel, and phones need that as much as desktops do. */}
+        <div className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 sm:ml-auto sm:w-auto">
+          {(trace.legend ?? STATE_LABELS).map((l) => (
             <span
               key={l.s}
               className="flex items-center gap-1.5 text-[11px] text-ink-3"

@@ -4,6 +4,8 @@ import * as t1 from "./algorithms/tier1";
 import * as t2 from "./algorithms/tier2";
 import * as t3 from "./algorithms/tier3";
 import * as t4 from "./algorithms/tier4";
+import * as tb from "./algorithms/trading-build";
+import * as tu from "./algorithms/trading-use";
 
 /**
  * Traces are built lazily and memoised — a few of them emit 100+ frames, and
@@ -44,6 +46,30 @@ const builders: Record<string, () => Trace> = {
   bloom: t4.bloomFilter,
   bitmask: t4.subsetEnumeration,
   "skip-list": t4.skipList,
+
+  // Trading concepts — Volume Profile.
+  "vp-auction": tb.auction,
+  "vp-tpo-vs-volume": tb.tpoVsVolume,
+  "vp-build": tb.buildFromBars,
+  "vp-bin-size": tb.binSize,
+  "vp-poc": tb.pocTies,
+  "vp-value-area": tb.valueAreaOct1,
+  "vp-value-area-rules": tb.valueAreaRules,
+  "vp-platforms": tb.platforms,
+  "vp-anatomy": tb.anatomy,
+  "vp-shapes": tb.shapes,
+  "vp-day-types": tb.dayTypes,
+  "vp-open-types": tu.openTypes,
+  "vp-value-relationships": tu.valueRelationships,
+  "vp-eighty": tu.eighty,
+  "vp-naked-poc": tu.nakedPoc,
+  "vp-rule-inputs": tu.ruleInputs,
+  "vp-developing": tu.developing,
+  "vp-composite": tu.composite,
+  "vp-vwap": tu.vwapVsProfile,
+  "vp-volume-source": tu.volumeSource,
+  "vp-mcx-session": tu.mcxSession,
+  "vp-noise": tu.noise,
 };
 
 const cache = new Map<string, Trace>();

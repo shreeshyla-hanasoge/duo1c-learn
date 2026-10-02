@@ -1,6 +1,7 @@
 import { useMemo, useState, type ElementType } from "react";
 import { motion } from "motion/react";
-import { GLOSSARY, GLOSSARY_FORMS } from "../data/glossary";
+import { glossaryForms, type Glossary } from "../data/glossary";
+import { useSubject } from "./SubjectContext";
 import { cn, spring } from "../lib/ui";
 
 /**
@@ -22,17 +23,35 @@ import { cn, spring } from "../lib/ui";
  * ransom note and stops meaning anything.
  */
 
-const TERM_RE = new RegExp(
-  `\\b(${GLOSSARY_FORMS.map((f) =>
-    f.form.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-  ).join("|")})\\b`,
-  "gi",
-);
+interface Matcher {
+  re: RegExp;
+  /** form (lowercased) → canonical glossary key. */
+  formToKey: Map<string, string>;
+}
 
-/** form (lowercased) → canonical glossary key. */
-const FORM_TO_KEY = new Map(
-  GLOSSARY_FORMS.map((f) => [f.form.toLowerCase(), f.key]),
-);
+/**
+ * One compiled matcher per glossary object. Glossaries are module-level
+ * constants, so this fills once per subject and never grows after that.
+ */
+const MATCHERS = new WeakMap<Glossary, Matcher>();
+
+function matcherFor(g: Glossary): Matcher {
+  let m = MATCHERS.get(g);
+  if (!m) {
+    const forms = glossaryForms(g);
+    m = {
+      re: new RegExp(
+        `\\b(${forms
+          .map((f) => f.form.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+          .join("|")})\\b`,
+        "gi",
+      ),
+      formToKey: new Map(forms.map((f) => [f.form.toLowerCase(), f.key])),
+    };
+    MATCHERS.set(g, m);
+  }
+  return m;
+}
 
 type Piece =
   | { kind: "text"; value: string }
@@ -40,7 +59,11 @@ type Piece =
   | { kind: "term"; value: string; termKey: string };
 
 /** Splits on backticks first, so a term inside `code` is never linked. */
-function tokenize(text: string, linkTerms: boolean): Piece[] {
+function tokenize(
+  text: string,
+  linkTerms: boolean,
+  { re: TERM_RE, formToKey: FORM_TO_KEY }: Matcher,
+): Piece[] {
   const pieces: Piece[] = [];
   const seen = new Set<string>();
 
@@ -89,12 +112,15 @@ export function Prose({
   linkTerms?: boolean;
 }) {
   const [open, setOpen] = useState<string | null>(null);
+  // The glossary belongs to the subject being read: the same word can mean
+  // different things in two subjects.
+  const glossary = useSubject().glossary;
   const pieces = useMemo(
-    () => tokenize(children, linkTerms),
-    [children, linkTerms],
+    () => tokenize(children, linkTerms, matcherFor(glossary)),
+    [children, linkTerms, glossary],
   );
 
-  const entry = open ? GLOSSARY[open] : null;
+  const entry = open ? glossary[open] : null;
 
   return (
     <>

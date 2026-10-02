@@ -66,15 +66,13 @@ export function Dashboard({ subject }: { subject: Subject }) {
               </p>
               <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">
                 {stats.mastered === 0
-                  ? "Start with the foundations"
+                  ? subject.copy.heroStart
                   : stats.mastered === stats.total
                     ? "Every topic mastered"
                     : `${stats.total - stats.mastered} topics to go`}
               </h1>
               <p className="mt-2 max-w-md text-sm text-ink-2">
-                Learn it animated, drive the algorithm yourself, then prove it
-                under quiz conditions. A topic only counts when all three are
-                done.
+                {subject.copy.heroBlurb}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <Chip tone="cursor">
@@ -183,8 +181,8 @@ export function Dashboard({ subject }: { subject: Subject }) {
 
       {/* ---- Tiers ---- */}
       <motion.section variants={itemVariants}>
-        <SectionTitle hint="each tier unlocks at half the previous one">
-          The six tiers
+        <SectionTitle hint={subject.copy.unitsHint}>
+          {subject.copy.unitsTitle}
         </SectionTitle>
         <div className="grid grid-cols-1 gap-3">
           {subject.tiers.map((tier) => {
@@ -238,8 +236,7 @@ export function Dashboard({ subject }: { subject: Subject }) {
         <Card className="p-4">
           <ActivityStrip daily={state.daily} />
           <p className="mt-3 text-xs text-ink-3">
-            Darker means more XP that day. The roadmap asks for 60–90 minutes,
-            five days a week — the gaps are the honest part.
+            {subject.copy.activityNote}
           </p>
         </Card>
       </motion.section>

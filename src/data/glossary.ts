@@ -505,15 +505,23 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   },
 };
 
+export type Glossary = Record<string, GlossaryEntry>;
+
 /**
- * Surface form → canonical key. Built once. Longest forms first so that
+ * Surface form → canonical key. Longest forms first so that
  * "binary search tree" wins over "binary search" when both could match.
+ *
+ * Each subject carries its own glossary (see `subjects.ts`), because the same
+ * word means different things in different subjects: DSA's "node" is a tree
+ * node, and in a trading course "high-volume node" must not link to it.
  */
-export const GLOSSARY_FORMS: { form: string; key: string }[] = Object.entries(
-  GLOSSARY,
-)
-  .flatMap(([key, entry]) => [
-    { form: key, key },
-    ...(entry.also ?? []).map((form) => ({ form, key })),
-  ])
-  .sort((a, b) => b.form.length - a.form.length);
+export function glossaryForms(g: Glossary): { form: string; key: string }[] {
+  return Object.entries(g)
+    .flatMap(([key, entry]) => [
+      { form: key, key },
+      ...(entry.also ?? []).map((form) => ({ form, key })),
+    ])
+    .sort((a, b) => b.form.length - a.form.length);
+}
+
+export const GLOSSARY_FORMS = glossaryForms(GLOSSARY);

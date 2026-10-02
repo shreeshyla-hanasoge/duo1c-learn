@@ -12,7 +12,7 @@
  * If the gate's measurement strategy changes there, it has to change here too,
  * or this script stops predicting what a reader will actually see.
  */
-import { TIERS } from "../src/data/curriculum.ts";
+import { SUBJECTS } from "../src/data/subjects.ts";
 import { fitExponent } from "../src/engine/lab/runner.ts";
 import type { ComplexityTarget } from "../src/engine/lab/runner.ts";
 import type { CodeLab } from "../src/data/types.ts";
@@ -103,7 +103,8 @@ function checkGate(lab: CodeLab) {
 let labs = 0;
 let failures = 0;
 
-for (const tier of TIERS) {
+// Every subject's labs, not just the first subject's.
+for (const tier of SUBJECTS.flatMap((s) => s.tiers)) {
   for (const topic of tier.topics) {
     if (!topic.lab) continue;
     labs++;

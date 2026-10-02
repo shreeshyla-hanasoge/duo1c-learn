@@ -6,7 +6,6 @@ import { authEnabled } from "../lib/auth";
 import { AccountBlock } from "../components/Account";
 import {
   useSubjectProgress,
-  BADGES,
   isMastered,
   levelProgress,
   overallStats,
@@ -103,11 +102,11 @@ export function Profile({ subject }: { subject: Subject }) {
       </motion.section>
 
       <motion.section variants={itemVariants}>
-        <SectionTitle hint={`${sp.badges.length} of ${BADGES.length}`}>
+        <SectionTitle hint={`${sp.badges.length} of ${subject.badges.length}`}>
           Badges
         </SectionTitle>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {BADGES.map((b, i) => {
+          {subject.badges.map((b, i) => {
             const earned = sp.badges.includes(b.id);
             return (
               <motion.div
@@ -153,7 +152,7 @@ export function Profile({ subject }: { subject: Subject }) {
       </motion.section>
 
       <motion.section variants={itemVariants}>
-        <SectionTitle>Tier breakdown</SectionTitle>
+        <SectionTitle>{subject.copy.unit} breakdown</SectionTitle>
         <Card className="divide-y divide-line">
           {subject.tiers.map((tier) => {
             const ts = tierStats(sp, subject, tier.id);
