@@ -3,7 +3,8 @@ import { AnimatePresence, motion } from "motion/react";
 import type { Cell, CellState, Frame, Trace } from "../../engine/trace";
 import { cn, spring, springSnap } from "../../lib/ui";
 import { STATE_LABELS, TONE } from "./tones";
-import { ChartPanel, LadderPanel } from "./ProfilePanels";
+import { LadderPanel } from "./ProfilePanels";
+import { ChartPanel } from "./ChartPanel";
 
 /* ------------------------------------------------------------------ *
  * The Stage renders whatever a Frame happens to contain. One component
@@ -548,14 +549,29 @@ export const Stage = memo(function Stage({
   trace: Trace;
 }) {
   const bars = trace.display === "bars";
+  // The chart and the ladder are STICKY: a frame that carries neither (a
+  // summary sentence, a stats-only step) keeps the last one on screen.
+  // Unmounting them made the stage collapse and the chart reload on the
+  // next frame — exactly the jump the panels exist to avoid.
+  const at = trace.frames.indexOf(frame);
+  const lastWith = <T,>(pick: (f: Frame) => T | undefined): T | undefined => {
+    for (let i = at; i >= 0; i--) {
+      const v = pick(trace.frames[i]);
+      if (v) return v;
+    }
+    return undefined;
+  };
+  const chart = frame.chart ?? lastWith((f) => f.chart);
+  const ladderView =
+    frame.ladder ?? (frame.chart ? undefined : lastWith((f) => f.ladder));
   return (
     <div className="flex flex-col gap-5">
       <GraphView frame={frame} />
       <GridView frame={frame} />
       <MatrixView frame={frame} />
       <IntervalView frame={frame} />
-      {frame.chart && <ChartPanel view={frame.chart} />}
-      {frame.ladder && <LadderPanel view={frame.ladder} />}
+      {chart && <ChartPanel view={chart} />}
+      {ladderView && <LadderPanel view={ladderView} />}
       <CellRow frame={frame} bars={bars} />
       <AuxTracks frame={frame} />
       <StatsRow frame={frame} />
