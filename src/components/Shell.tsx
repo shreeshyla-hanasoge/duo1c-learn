@@ -41,7 +41,10 @@ export function Shell({
   const toggleTheme = useProgress((s) => s.toggleTheme);
   const { level, into, need, pct } = levelProgress(xp);
 
-  const active = route.name === "topic" ? "path" : route.name;
+  // Tiers and topics both live under the path, so the nav keeps "Path" lit
+  // rather than dropping every highlight on a deep page.
+  const active =
+    route.name === "topic" || route.name === "tier" ? "path" : route.name;
 
   return (
     <div className="flex min-h-full flex-col lg:flex-row">
@@ -153,10 +156,9 @@ export function Shell({
                 color: on ? "var(--color-ink)" : "var(--color-ink-3)",
               }}
             >
+              {/* Same reasoning as the sidebar's NavLink — no sliding pill. */}
               {on && (
-                <motion.span
-                  layoutId="tab-pill"
-                  transition={spring}
+                <span
                   className="absolute inset-x-4 top-1 bottom-1 -z-10 rounded-xl"
                   style={{ background: "var(--color-surface-2)" }}
                 />
@@ -305,7 +307,7 @@ function Brand({ subject, compact }: { subject: Subject; compact?: boolean }) {
         style={{ background: "var(--color-viz-cursor)" }}
         aria-hidden
       >
-        道
+        d1
       </span>
       <span className="leading-tight">
         <span className="block text-sm font-semibold">duo1c Learn</span>
@@ -335,10 +337,13 @@ function NavLink({
         active ? "text-ink" : "text-ink-3 hover:text-ink-2",
       )}
     >
+      {/* A plain span, deliberately NOT a shared-layout `layoutId` pill.
+          With one, motion animates the highlight from the previously active
+          row to this one, so every navigation drags a rectangle up or down
+          the sidebar. The highlight marks where you are; it should already
+          be there when the page arrives, not travel to it. */}
       {active && (
-        <motion.span
-          layoutId="nav-pill"
-          transition={spring}
+        <span
           className="absolute inset-0 -z-10 rounded-xl border border-line"
           style={{ background: "var(--color-surface-2)" }}
         />

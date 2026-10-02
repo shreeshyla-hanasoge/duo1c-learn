@@ -8,6 +8,12 @@ export const recursionMemo: Topic = {
   depth: "core",
   summary: "Recursion trees, overlapping subproblems, and the road to DP.",
   why: 'Memoisation is the bridge from "I can describe the problem recursively" to "I can solve it in polynomial time". Every dynamic programming solution starts life here, and in an interview writing the recursion first and then adding a cache is a far more reliable route to a correct answer than trying to write the table directly.',
+  conceptFilm: {
+    src: "/media/concept-films/recursion-nested-rooms.mp4",
+    title: "The stack remembers the way home",
+    watchFor:
+      "Each room is one active call. The return journey passes through the rooms in reverse order—the call stack unwinding.",
+  },
   complexity: "Distinct states × work per state",
   learn: {
     intuition:

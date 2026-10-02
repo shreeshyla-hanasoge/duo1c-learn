@@ -118,3 +118,23 @@ export const TRADING_BADGES: BadgeDef[] = [
   common.halfway,
   common.complete,
 ];
+
+/**
+ * Price Dynamics badges. This subject launched while badges were still one
+ * global, tier-shaped list, so anything a reader earned here was stored
+ * under the DSA ids — "foundations" for Tier 0 and so on. The ids are kept
+ * so those badges still count; only the display names fit the course.
+ */
+export const PRICE_BADGES: BadgeDef[] = [
+  common.firstBlood,
+  unitBadge("foundations", "Fluent in Randomness", "Master every Tier 0 topic", 0),
+  unitBadge("structures", "Under the Hood", "Master every Tier 1 topic", 1),
+  unitBadge("graphs", "Signal Hunter", "Master every Tier 2 topic", 2),
+  unitBadge("dp", "Adaptive", "Master every Tier 3 topic", 3),
+  common.flawless,
+  common.streak7,
+  common.streak30,
+  common.arena10,
+  common.halfway,
+  common.complete,
+];

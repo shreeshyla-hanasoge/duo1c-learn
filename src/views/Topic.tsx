@@ -48,6 +48,7 @@ export function TopicView({
     );
   }
 
+  const tier = subject.tiers.find((t) => t.id === topic.tier);
   const index = subject.topics.findIndex((t) => t.id === id);
   const prev = index > 0 ? subject.topics[index - 1] : null;
   const nextTopic =
@@ -64,12 +65,28 @@ export function TopicView({
     <div className="flex flex-col gap-6">
       {/* ---- Header ---- */}
       <div>
-        <a
-          href={href({ name: "path" }, subject.id)}
-          className="inline-flex items-center gap-1.5 text-xs text-ink-3 transition-colors hover:text-ink-2"
-        >
-          <ArrowLeft size={13} /> The path
-        </a>
+        {/* Breadcrumb, not a bare back link: a topic belongs to a tier, and
+            the tier page is where the shared idea and the sibling topics are.
+            Sending "back" to the full path skips that entirely. */}
+        <nav className="flex flex-wrap items-center gap-1.5 text-xs text-ink-3">
+          <a
+            href={href({ name: "path" }, subject.id)}
+            className="inline-flex items-center gap-1.5 transition-colors hover:text-ink-2"
+          >
+            <ArrowLeft size={13} /> The path
+          </a>
+          {tier && (
+            <>
+              <span aria-hidden>/</span>
+              <a
+                href={href({ name: "tier", id: tier.id }, subject.id)}
+                className="truncate transition-colors hover:text-ink-2"
+              >
+                {tier.name}
+              </a>
+            </>
+          )}
+        </nav>
 
         <div className="mt-3 flex items-start gap-3">
           <TierBadge tier={topic.tier} className="mt-1" />

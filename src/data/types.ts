@@ -48,6 +48,14 @@ export interface Insight {
   d: string;
 }
 
+/** A short visual metaphor that builds intuition before formal explanation. */
+export interface ConceptFilm {
+  src: string;
+  title: string;
+  /** One observation prompt; the film should not duplicate the lesson prose. */
+  watchFor: string;
+}
+
 /** Where this structure earns its keep in a system somebody actually ships. */
 export interface RealWorldCase {
   system: string;
@@ -184,6 +192,7 @@ export interface Topic {
   week?: number;
   summary: string;
   why: string;
+  conceptFilm?: ConceptFilm;
   complexity?: string;
   /** Keys into the visualiser registry. */
   viz?: string[];
@@ -199,11 +208,60 @@ export interface Topic {
   cases?: DecisionCase[];
 }
 
+/**
+ * What makes a tier a PLACE rather than a folder.
+ *
+ * A tier used to be `{ id, name, tagline, topics }` — enough to render a
+ * heading above a list, and nothing more. But "Graphs" is not nine unrelated
+ * lessons that happen to share a number; it is one idea with nine faces, and
+ * the reader who understands the idea first learns the nine far faster than
+ * the reader who meets them one at a time.
+ *
+ * So this is the orientation a reader gets BEFORE any topic: what the family
+ * is, the words it assumes, how its members build on each other, and what
+ * they will be able to do once it is theirs.
+ *
+ * Optional, so a tier without one still renders — it simply falls back to the
+ * topic list, which is what every tier had before.
+ */
+export interface TierOrientation {
+  /**
+   * The idea, in plain English, before any formalism. This is the paragraph
+   * that has to do the work: if the reader only ever reads this, they should
+   * still come away with the shape of the thing.
+   */
+  overview: string;
+  /**
+   * A one-line answer to "why does this tier exist at all" — the thing that
+   * goes wrong for someone who skips it.
+   */
+  stakes: string;
+  /**
+   * The tells: phrases in a problem statement that mean "this is a <tier>
+   * problem". Deliberately NOT a vocabulary list — `glossary.ts` already
+   * defines the words and `Prose` links them on first mention, so a glossary
+   * per tier would only repeat it. Knowing WHEN to reach for a family is the
+   * skill no individual topic can teach, because each topic has already
+   * assumed the answer by the time you open it.
+   */
+  recognise: { signal: string; reach: string }[];
+  /**
+   * The ARC — how the topics build, in stages, not the flat list.
+   * `topics` holds topic ids; unknown ids are skipped when rendering.
+   */
+  arc: { stage: string; topics: string[]; point: string }[];
+  /** Concrete capabilities, phrased as things the reader can now do. */
+  outcomes: string[];
+  /** Where this family shows up in systems people actually ship. */
+  inTheWild: { system: string; use: string }[];
+}
+
 export interface Tier {
   id: number;
   name: string;
   tagline: string;
   topics: Topic[];
+  orientation?: TierOrientation;
 }
 
 export interface Phase {

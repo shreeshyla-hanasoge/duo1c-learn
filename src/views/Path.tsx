@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { CheckCircle2, Circle, Film, Lock, Sparkles } from "lucide-react";
-import { type Topic } from "../data/curriculum";
+import { ChevronRight, Lock, Sparkles } from "lucide-react";
 import type { Subject } from "../data/subjects";
 import { href } from "../lib/router";
 import {
@@ -9,9 +8,9 @@ import {
   tierStats,
   tierUnlocked,
   useSubjectProgress,
-  useTopicProgress,
 } from "../store/progress";
 import { Card, Chip, Meter, SectionTitle, TierBadge } from "../components/ui";
+import { TopicCard } from "../components/TopicCard";
 import { cn, itemVariants, listVariants, spring } from "../lib/ui";
 import { hasTrace } from "../engine/registry";
 
@@ -69,6 +68,25 @@ export function Path({ subject }: { subject: Subject }) {
           <WeekView subject={subject} />
         )}
       </motion.div>
+
+      {subject.resources && subject.resources.length > 0 && (
+        <section>
+          <SectionTitle hint="books that bridge the fields">
+            Reading shelf
+          </SectionTitle>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {subject.resources.map((resource) => (
+              <Card key={resource.title} className="h-full p-4">
+                <h3 className="text-sm font-medium">{resource.title}</h3>
+                <p className="mt-0.5 text-xs text-ink-3">{resource.author}</p>
+                <p className="mt-2 text-sm leading-relaxed text-ink-2">
+                  {resource.note}
+                </p>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
@@ -88,19 +106,31 @@ function TierView({ subject }: { subject: Subject }) {
         const ts = tierStats(sp, subject, tier.id);
         return (
           <motion.section key={tier.id} variants={itemVariants}>
-            <div className="mb-3 flex items-center gap-3">
+            {/* The heading is a link to the tier's own page — the orientation
+                (what this family IS, and when to reach for it) lives there,
+                because it does not fit above a list of nine cards. */}
+            <a
+              href={href({ name: "tier", id: tier.id }, subject.id)}
+              className="group mb-3 flex items-center gap-3"
+            >
               <TierBadge tier={tier.id} />
               <div className="min-w-0 flex-1">
-                <h2 className="flex items-center gap-2 text-sm font-semibold">
-                  {tier.name}
-                  {!unlocked && <Lock size={12} className="text-ink-3" />}
+                <h2 className="flex items-center gap-1.5 text-sm font-semibold">
+                  <span className="truncate">{tier.name}</span>
+                  {!unlocked && (
+                    <Lock size={12} className="shrink-0 text-ink-3" />
+                  )}
+                  <ChevronRight
+                    size={13}
+                    className="shrink-0 text-ink-3 transition-colors group-hover:text-ink-2"
+                  />
                 </h2>
                 <p className="truncate text-xs text-ink-3">{tier.tagline}</p>
               </div>
               <span className="tabular shrink-0 font-mono text-xs text-ink-3">
                 {ts.mastered}/{ts.total}
               </span>
-            </div>
+            </a>
 
             <Meter className="mb-4" pct={ts.pct} />
 
@@ -114,75 +144,13 @@ function TierView({ subject }: { subject: Subject }) {
 
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {tier.topics.map((topic) => (
-                <TopicRow key={topic.id} topic={topic} subject={subject} />
+                <TopicCard key={topic.id} topic={topic} subject={subject} />
               ))}
             </div>
           </motion.section>
         );
       })}
     </motion.div>
-  );
-}
-
-function TopicRow({ topic, subject }: { topic: Topic; subject: Subject }) {
-  const p = useTopicProgress(subject.id, topic.id);
-  const mastered = isMastered(p);
-  const animated = topic.viz?.some(hasTrace) ?? false;
-
-  return (
-    <a
-      href={href({ name: "topic", id: topic.id, mode: "learn" }, subject.id)}
-      className="block"
-    >
-      <Card interactive className="flex h-full items-start gap-3 p-3.5">
-        <span className="mt-0.5 shrink-0">
-          {mastered ? (
-            <CheckCircle2
-              size={16}
-              style={{ color: "var(--color-viz-match)" }}
-            />
-          ) : (
-            <Circle size={16} className="text-ink-3" />
-          )}
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5">
-            <h3 className="truncate text-sm font-medium">{topic.title}</h3>
-            {animated && <Film size={12} className="shrink-0 text-ink-3" />}
-          </div>
-          <p className="mt-0.5 line-clamp-2 text-xs text-ink-3">
-            {topic.summary}
-          </p>
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            <Gate on={p?.learned} label="learn" />
-            <Gate on={p?.solved} label="solve" />
-            <Gate on={(p?.quizBest ?? 0) >= 0.8} label="quiz" />
-            {topic.complexity && (
-              <span className="ml-auto font-mono text-[10px] text-ink-3">
-                {topic.complexity}
-              </span>
-            )}
-          </div>
-        </div>
-      </Card>
-    </a>
-  );
-}
-
-function Gate({ on, label }: { on?: boolean; label: string }) {
-  return (
-    <span
-      className="rounded px-1.5 py-0.5 font-mono text-[10px]"
-      style={{
-        background: on
-          ? "color-mix(in oklab, var(--color-viz-match) 22%, transparent)"
-          : "var(--color-surface-3)",
-        color: on ? "var(--color-ink)" : "var(--color-ink-3)",
-        border: `1px solid ${on ? "var(--color-viz-match)" : "var(--color-line)"}`,
-      }}
-    >
-      {on ? "✓" : "·"} {label}
-    </span>
   );
 }
 

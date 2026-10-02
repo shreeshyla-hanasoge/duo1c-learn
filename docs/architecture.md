@@ -288,8 +288,8 @@ src/
   data/            curriculum.ts (tiers, topics, quizzes, phases), subjects.ts (registry)
   store/           progress.ts — XP, gates, badges, streaks (zustand + persist v2)
   lib/             router.ts (hash), auth.ts (PKCE), sync.ts, ui.ts (motion), toast.ts
-  components/      Shell, ui primitives, viz/{Stage,VizPlayer}
-  views/           Dashboard, Path, Topic (+ modes/), Arena, Profile
+  components/      Shell, ui primitives, TopicCard, Prose, viz/{Stage,VizPlayer}
+  views/           Dashboard, Path, Tier, Topic (+ modes/), Arena, Profile
 infra/             CDK — data / auth / api / site stacks
 lambda/progress/   the one Lambda
 ```
@@ -299,6 +299,15 @@ lambda/progress/   the one Lambda
 `#/<subject>/<page>/...`, e.g. `#/dsa/topic/two-pointers/learn`. A leading segment naming a
 known subject selects it; anything else falls back to the default, so pre-subject URLs keep
 working. `href(page, subjectId)` defaults the subject so in-subject links stay terse.
+
+Pages: `dashboard`, `path`, `tier/<n>`, `topic/<id>/<mode>`, `arena`, `profile`. A
+`tier/<n>` whose id is missing or non-numeric falls back to `path` rather than rendering an
+empty page; an id that parses but names no tier renders a "no such tier" message, because
+that one is a real typo worth showing.
+
+The hierarchy is path → tier → topic, and both deep pages keep **Path** lit in the nav
+(`Shell.tsx`). A topic's breadcrumb points at its tier, not back at the full path — the tier
+page is where the shared idea and the sibling topics are.
 
 ### Subjects
 

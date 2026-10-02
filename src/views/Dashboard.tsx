@@ -194,7 +194,7 @@ export function Dashboard({ subject }: { subject: Subject }) {
             return (
               <a
                 key={tier.id}
-                href={href({ name: "path" }, subject.id)}
+                href={href({ name: "tier", id: tier.id }, subject.id)}
                 className="block"
               >
                 <Card interactive className="p-4">

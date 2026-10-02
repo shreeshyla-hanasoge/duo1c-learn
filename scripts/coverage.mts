@@ -78,3 +78,43 @@ const dangling = ALL.flatMap((t) =>
 if (dangling.length) {
   console.log(`\nTopic references a missing visualiser key: ${dangling.join(", ")}`);
 }
+
+/* ---- Tier orientation --------------------------------------------------- *
+ * The tier page's arc groups every topic into a stage. Adding a topic to a
+ * tier without adding it to a stage is silent at runtime — the topic simply
+ * never appears in the arc — so it is checked here instead.               */
+
+console.log("\n| Tier | Orientation | Arc stages | Topics in the arc |");
+console.log("| --- | --- | --- | --- |");
+
+const problems: string[] = [];
+for (const tier of TIERS) {
+  const o = tier.orientation;
+  if (!o) {
+    console.log(`| ${tier.id} | — | — | — |`);
+    problems.push(`T${tier.id} has no orientation (falls back to the topic list)`);
+    continue;
+  }
+  const inArc = new Set(o.arc.flatMap((s) => s.topics));
+  const missing = tier.topics.filter((t) => !inArc.has(t.id)).map((t) => t.id);
+  const unknown = [...inArc].filter(
+    (id) => !tier.topics.some((t) => t.id === id),
+  );
+  console.log(
+    `| ${tier.id} | yes | ${o.arc.length} | ` +
+      `${tier.topics.length - missing.length}/${tier.topics.length} |`,
+  );
+  if (missing.length)
+    problems.push(`T${tier.id} arc omits: ${missing.join(", ")}`);
+  if (unknown.length)
+    problems.push(
+      `T${tier.id} arc names topics not in this tier: ${unknown.join(", ")}`,
+    );
+}
+
+if (problems.length) {
+  console.log("\nTier orientation problems:");
+  for (const p of problems) console.log(`  ${p}`);
+} else {
+  console.log("\nEvery topic appears in exactly one arc stage of its tier.");
+}

@@ -191,6 +191,33 @@ questions with a `distractors` entry for every wrong option.
 Note that adding a topic changes the denominator for that tier's unlock threshold and for
 the `halfway` / `complete` badges — existing users may see percentages move.
 
+**Also add it to its tier's `orientation.arc`** (below). Nothing breaks if you forget — the
+topic simply never appears in the arc — so `scripts/coverage.mts` checks it instead.
+
+### Write a tier's orientation
+
+`Tier.orientation` is what makes `#/<subject>/tier/<n>` a page about the *family* rather than
+a heading above a list. Optional: a tier without one falls back to just its topic grid.
+
+| Field | What it is |
+| --- | --- |
+| `overview` | The idea in plain English, before any formalism. If the reader reads only this, they should still get the shape of the thing. |
+| `stakes` | One line: what goes wrong for someone who skips this tier. |
+| `recognise[]` | `signal` → `reach`. The tells in a problem statement that mean "this is a <tier> problem". Deliberately not a vocabulary list — `glossary.ts` already defines the words and `Prose` links them. |
+| `arc[]` | `stage` / `topics[]` / `point` — how the topics build, in stages. `topics` holds topic ids; every topic in the tier must appear in exactly one stage. |
+| `outcomes[]` | Concrete things the reader can now do. |
+| `inTheWild[]` | `system` → `use`, scoped to the family rather than to one algorithm. |
+
+Two rules that came out of building the first six:
+
+- **Glossary linking is on for `overview` only.** `Prose` de-duplicates term links within a
+  block, not across them, so with eight blocks on the page "graph" linked four separate
+  times. Everything else on the tier page passes `linkTerms={false}` — backtick code spans
+  still render, the underlining does not.
+- **A stage is a claim, not a bucket.** "Ordering and grouping" earns its place because the
+  `point` says something true about why those two topics sit together. If the point could be
+  deleted without loss, the stage is just a sublist and the arc is not doing its job.
+
 ### Add a subject
 
 `src/data/subjects.ts` is the registry. A `Subject` carries its `tiers` (DSA calls them

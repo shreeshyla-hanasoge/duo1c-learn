@@ -12,6 +12,7 @@ import { SignInPrompt } from "./components/SignInPrompt";
 import { pageVariants } from "./lib/ui";
 import { Dashboard } from "./views/Dashboard";
 import { Path } from "./views/Path";
+import { TierView } from "./views/Tier";
 import { TopicView } from "./views/Topic";
 import { Arena } from "./views/Arena";
 import { Profile } from "./views/Profile";
@@ -63,6 +64,7 @@ export default function App() {
       >
         {route.name === "dashboard" && <Dashboard subject={subject} />}
         {route.name === "path" && <Path subject={subject} />}
+        {route.name === "tier" && <TierView subject={subject} id={route.id} />}
         {route.name === "topic" && (
           <TopicView subject={subject} id={route.id} mode={route.mode} />
         )}

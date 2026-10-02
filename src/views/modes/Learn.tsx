@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
-import { motion } from "motion/react";
-import { AlertTriangle, Check, Lightbulb } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { AlertTriangle, Check, Film, Lightbulb } from "lucide-react";
 import type { Topic } from "../../data/curriculum";
 import { getTrace, hasTrace } from "../../engine/registry";
 import { VizPlayer } from "../../components/viz/VizPlayer";
@@ -47,11 +47,18 @@ export function Learn({ subject, topic }: { subject: Subject; topic: Topic }) {
           <p className="text-[11px] tracking-wide text-ink-3 uppercase">
             Why it matters
           </p>
-          <Prose className="mt-1.5 text-sm leading-relaxed text-ink-2">
+          <Prose
+            linkTerms={subject.linkGlossary !== false}
+            className="mt-1.5 text-sm leading-relaxed text-ink-2"
+          >
             {topic.why}
           </Prose>
         </Card>
       </motion.section>
+
+      {topic.conceptFilm && (
+        <ConceptFilm film={topic.conceptFilm} />
+      )}
 
       {/* ---- Visualiser ---- */}
       {trace && (
@@ -132,7 +139,10 @@ export function Learn({ subject, topic }: { subject: Subject; topic: Topic }) {
                 </span>
                 <div className="min-w-0">
                   <h3 className="text-sm font-medium">{ins.t}</h3>
-                  <Prose className="mt-1 text-sm leading-relaxed text-ink-2">
+                  <Prose
+                    linkTerms={subject.linkGlossary !== false}
+                    className="mt-1 text-sm leading-relaxed text-ink-2"
+                  >
                     {ins.d}
                   </Prose>
                 </div>
@@ -159,7 +169,11 @@ export function Learn({ subject, topic }: { subject: Subject; topic: Topic }) {
                     style={{ color: "var(--color-viz-scan)" }}
                   />
                   <span className="min-w-0">
-                    <Prose as="span" className="text-ink-2">
+                    <Prose
+                      as="span"
+                      linkTerms={subject.linkGlossary !== false}
+                      className="text-ink-2"
+                    >
                       {p}
                     </Prose>
                   </span>
@@ -196,5 +210,55 @@ export function Learn({ subject, topic }: { subject: Subject; topic: Topic }) {
         )}
       </motion.section>
     </motion.div>
+  );
+}
+
+function ConceptFilm({
+  film,
+}: {
+  film: NonNullable<Topic["conceptFilm"]>;
+}) {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <motion.section variants={itemVariants}>
+      <SectionTitle hint="a visual metaphor, not a literal simulation">
+        See the idea
+      </SectionTitle>
+      <Card className="overflow-hidden p-0">
+        <div className="aspect-video bg-black">
+          <video
+            src={film.src}
+            aria-label={film.title}
+            className="h-full w-full object-cover"
+            autoPlay={!reduceMotion}
+            muted
+            loop
+            playsInline
+            controls
+            preload="metadata"
+          />
+        </div>
+        <div className="flex items-start gap-3 p-4 sm:p-5">
+          <span
+            className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg"
+            style={{
+              background:
+                "color-mix(in oklab, var(--color-viz-cursor) 16%, transparent)",
+              color: "var(--color-viz-cursor)",
+            }}
+          >
+            <Film size={15} />
+          </span>
+          <div className="min-w-0">
+            <h3 className="text-sm font-medium">{film.title}</h3>
+            <p className="mt-1 text-sm leading-relaxed text-ink-2">
+              <span className="text-ink-3">Watch for — </span>
+              {film.watchFor}
+            </p>
+          </div>
+        </div>
+      </Card>
+    </motion.section>
   );
 }
