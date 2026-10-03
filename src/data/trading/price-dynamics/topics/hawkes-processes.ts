@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const hawkesProcesses: Topic = {
   id: "hawkes-processes",
   title: "Hawkes point processes",
-  tier: 1,
+  tier: 3,
   week: 7,
   summary: "A language for clustered events where each arrival temporarily raises future intensity.",
   why: "Trades, order submissions, cancellations, and price jumps arrive in bursts. Hawkes processes model event time directly and quantify how much activity is internally triggered.",

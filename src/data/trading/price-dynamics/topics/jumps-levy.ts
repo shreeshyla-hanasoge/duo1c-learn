@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const jumpsLevy: Topic = {
   id: "jumps-levy",
   title: "Lévy processes & jumps",
-  tier: 0,
+  tier: 2,
   week: 2,
   summary: "Models that allow discontinuous moves and heavier tails than Brownian motion.",
   why: "Real prices gap on news, auctions, and liquidity holes. A continuous Gaussian path assigns far too little probability to these moves.",

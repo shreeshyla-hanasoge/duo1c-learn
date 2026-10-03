@@ -1,4 +1,4 @@
-import type { Phase, Tier } from "../types.ts";
+import type { Phase, Tier } from "../../types.ts";
 import { stochasticProcesses } from "./topics/stochastic-processes.ts";
 import { jumpsLevy } from "./topics/jumps-levy.ts";
 import { volatilityModels } from "./topics/volatility-models.ts";
@@ -18,7 +18,8 @@ import { behaviouralRandomness } from "./topics/behavioural-randomness.ts";
 
 export const PRICE_TIERS: Tier[] = [
   {
-    id: 0,
+    id: 2,
+    entry: true,
     name: "Language of randomness",
     tagline: "Describe what moves randomly before trying to explain why.",
     topics: [stochasticProcesses, jumpsLevy, volatilityModels, roughVolatility],
@@ -44,7 +45,7 @@ export const PRICE_TIERS: Tier[] = [
     },
   },
   {
-    id: 1,
+    id: 3,
     name: "How markets generate it",
     tagline: "Orders, feedback, and interacting traders beneath the price path.",
     topics: [microstructure, priceImpact, hawkesProcesses, agentBasedMarkets],
@@ -71,7 +72,7 @@ export const PRICE_TIERS: Tier[] = [
     },
   },
   {
-    id: 2,
+    id: 4,
     name: "Measure signal against noise",
     tagline: "Tails, information, scale, and the null models that keep us honest.",
     topics: [extremeValueTheory, informationTheory, signalProcessing, econophysicsRmt],
@@ -97,7 +98,7 @@ export const PRICE_TIERS: Tier[] = [
     },
   },
   {
-    id: 3,
+    id: 5,
     name: "Changing systems & human error",
     tagline: "Why patterns decay, shocks spread, and analysts fool themselves.",
     topics: [adaptiveMarkets, networkContagion, ergodicity, behaviouralRandomness],

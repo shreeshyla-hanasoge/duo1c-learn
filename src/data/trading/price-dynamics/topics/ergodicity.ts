@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const ergodicity: Topic = {
   id: "ergodicity",
   title: "Ergodicity & multiplicative wealth",
-  tier: 3,
+  tier: 5,
   week: 15,
   summary: "Why the average across imagined worlds can differ from what one investor experiences through time.",
   why: "Returns compound multiplicatively. In such systems, ensemble expected wealth can rise even while the typical long-run path stagnates or shrinks.",

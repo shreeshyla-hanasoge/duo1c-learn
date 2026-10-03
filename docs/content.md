@@ -250,6 +250,13 @@ one is synthetic and labelled so. Candles and session profiles are drawn by **Em
 `chart` frame panel; per-bin algorithm steps use the DOM `ladder` panel. Candles are
 neutral (hollow up, filled down) so no hue beyond the three validated state hues appears.
 
+Modules: **M1 Volume Profile** (`modules/volume-profile.ts`) and **M2–M5 Price Dynamics &
+Market Randomness** (`price-dynamics/`, with its 16-week plan as the subject's `phases`). Price
+Dynamics shipped first as a subject of its own; `SUBJECT_ALIASES` in `progress-model.ts` folds
+any stored or synced `price-dynamics` progress into `trading` (store migration v3, and every
+sync merge) and keeps old `#/price-dynamics/…` links working. M2 sets `entry: true` on its
+`Tier`, so it opens as a track of its own rather than waiting on half of M1.
+
 Adding a module: a new `modules/<name>.ts` with its topics, one line in `MODULES`, a badge
 in `TRADING_BADGES`. The writing brief for the first module, with the evidence rules, is
 `docs/trading/writing-brief.md`; sources and their reliability labels are in

@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const behaviouralRandomness: Topic = {
   id: "behavioural-randomness",
   title: "How humans misread randomness",
-  tier: 3,
+  tier: 5,
   week: 16,
   summary: "Apophenia, clustering illusions, hindsight, and the discipline of distrusting a persuasive chart.",
   why: "The final source of false predictability is the analyst. Human pattern recognition is powerful enough to discover shapes in noise, especially after the outcome is known.",

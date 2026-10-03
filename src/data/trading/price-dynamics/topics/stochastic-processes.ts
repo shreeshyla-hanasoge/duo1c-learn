@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const stochasticProcesses: Topic = {
   id: "stochastic-processes",
   title: "Random walks & martingales",
-  tier: 0,
+  tier: 2,
   week: 1,
   summary: "The precise language for a price whose next direction is unpredictable.",
   why: "A martingale separates 'unpredictable direction' from 'no structure at all'. Prices may be martingales while volatility, trading intensity, and tails remain highly predictable.",

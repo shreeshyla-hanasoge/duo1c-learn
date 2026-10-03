@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const roughVolatility: Topic = {
   id: "rough-volatility",
   title: "Rough volatility",
-  tier: 0,
+  tier: 2,
   week: 4,
   summary: "Why volatility paths appear far more jagged than classical diffusion models allow.",
   why: "Empirical volatility behaves as if its Hurst exponent is near 0.1: strongly irregular locally, yet with dependence across scales. This changes forecasting and option modelling.",

@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const adaptiveMarkets: Topic = {
   id: "adaptive-markets",
   title: "Adaptive markets",
-  tier: 3,
+  tier: 5,
   week: 13,
   summary: "Strategies as competing species whose success alters the environment that made them successful.",
   why: "Market patterns are not stationary physical constants. Once discovered, capital moves toward them, execution costs rise, competitors adapt, and the edge can weaken or invert.",

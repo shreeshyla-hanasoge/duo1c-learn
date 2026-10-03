@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const agentBasedMarkets: Topic = {
   id: "agent-based-markets",
   title: "Agent-based markets & minority games",
-  tier: 1,
+  tier: 3,
   week: 8,
   summary: "How heterogeneous strategies interacting through one price can create bursts and fat tails.",
   why: "Instead of assuming a price process, agent-based models ask which market-level patterns emerge when many bounded, adapting traders compete for scarce liquidity and profit.",

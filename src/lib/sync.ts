@@ -1,11 +1,10 @@
 import { authConfig, getIdToken } from "./auth";
 import {
   useProgress,
-  type ArenaResult,
   type SubjectProgress,
   type SyncPayload,
-  type TopicProgress,
 } from "../store/progress";
+import { foldSubjectAliases, mergeSubject } from "../data/progress-model";
 
 /* ------------------------------------------------------------------ *
  * Progress sync.
@@ -24,51 +23,6 @@ function laterISO(a: string | null, b: string | null): string | null {
   if (!a) return b;
   if (!b) return a;
   return a > b ? a : b;
-}
-
-function mergeTopic(a?: TopicProgress, b?: TopicProgress): TopicProgress {
-  if (!a) return b!;
-  if (!b) return a;
-  const masteredAt =
-    a.masteredAt && b.masteredAt
-      ? a.masteredAt < b.masteredAt
-        ? a.masteredAt
-        : b.masteredAt
-      : (a.masteredAt ?? b.masteredAt);
-  return {
-    learned: a.learned || b.learned,
-    solved: a.solved || b.solved,
-    quizBest: Math.max(a.quizBest, b.quizBest),
-    quizAttempts: Math.max(a.quizAttempts, b.quizAttempts),
-    ...(masteredAt ? { masteredAt } : {}),
-  };
-}
-
-function mergeArena(a: ArenaResult[], b: ArenaResult[]): ArenaResult[] {
-  const seen = new Set<string>();
-  const out: ArenaResult[] = [];
-  for (const r of [...a, ...b]) {
-    const key = `${r.date}|${r.score}|${r.total}|${r.seconds}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(r);
-  }
-  return out.sort((x, y) => x.date.localeCompare(y.date)).slice(-30);
-}
-
-function mergeSubject(a: SubjectProgress, b: SubjectProgress): SubjectProgress {
-  const topics: Record<string, TopicProgress> = {};
-  for (const id of new Set([
-    ...Object.keys(a.topics),
-    ...Object.keys(b.topics),
-  ])) {
-    topics[id] = mergeTopic(a.topics[id], b.topics[id]);
-  }
-  return {
-    topics,
-    badges: [...new Set([...a.badges, ...b.badges])],
-    arena: mergeArena(a.arena, b.arena),
-  };
 }
 
 export function mergePayloads(a: SyncPayload, b: SyncPayload): SyncPayload {
@@ -94,7 +48,10 @@ export function mergePayloads(a: SyncPayload, b: SyncPayload): SyncPayload {
     streak: Math.max(a.streak, b.streak),
     lastActive: laterISO(a.lastActive, b.lastActive),
     daily,
-    subjects,
+    // A subject that was folded into another (Price Dynamics → Trading)
+    // can still arrive from an older device or the server; fold it here so
+    // it never reappears as a subject of its own.
+    subjects: foldSubjectAliases(subjects),
   };
 }
 

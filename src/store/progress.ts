@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { DEFAULT_SUBJECT_ID, getSubject, type Subject } from "../data/subjects";
 import {
+  foldSubjectAliases,
   isMastered,
   masteredCount,
   type ArenaResult,
@@ -157,6 +158,7 @@ export function tierUnlocked(
   tier: number,
 ): boolean {
   if (tier === 0) return true;
+  if (subject.tiers.find((t) => t.id === tier)?.entry) return true;
   const prev = subject.tiers.find((t) => t.id === tier - 1)?.topics ?? [];
   if (prev.length === 0) return true;
   const started = prev.filter((t) => {
@@ -363,7 +365,7 @@ export const useProgress = create<ProgressState>()(
             streak: payload.streak,
             lastActive: payload.lastActive,
             daily: payload.daily,
-            subjects: payload.subjects,
+            subjects: foldSubjectAliases(payload.subjects),
           }),
 
         setSync: (status, error = null) =>
@@ -379,8 +381,14 @@ export const useProgress = create<ProgressState>()(
     },
     {
       name: "learn-duo1c-progress",
-      version: 2,
+      version: 3,
       migrate: (persisted, version) => {
+        // v2 → v3: Price Dynamics became modules of Trading concepts. Its
+        // topic ids did not change, so its progress folds straight in.
+        if (version === 2 && persisted && typeof persisted === "object") {
+          const p = persisted as ProgressState;
+          return { ...p, subjects: foldSubjectAliases(p.subjects ?? {}) };
+        }
         // v1 was single-subject: { topics, badges, arena } at the root.
         if (version < 2 && persisted && typeof persisted === "object") {
           const old = persisted as Record<string, unknown>;

@@ -8,18 +8,12 @@ import {
   type Topic,
 } from "./curriculum.ts";
 import { GLOSSARY, type Glossary } from "./glossary.ts";
-import { DSA_BADGES, PRICE_BADGES, TRADING_BADGES } from "./badges.ts";
-import type { BadgeDef } from "./progress-model.ts";
+import { DSA_BADGES, TRADING_BADGES } from "./badges.ts";
+import { SUBJECT_ALIASES, type BadgeDef } from "./progress-model.ts";
 import * as trading from "./trading/curriculum.ts";
-import {
-  PRICE_ALL_TOPICS,
-  PRICE_PHASES,
-  PRICE_TIERS,
-  PRICE_TOPIC_BY_ID,
-} from "./price-dynamics/curriculum.ts";
 
 /**
- * The platform hosts SUBJECTS: DSA, Trading concepts and Price Dynamics.
+ * The platform hosts SUBJECTS: DSA and Trading concepts.
  *
  * Everything user-facing and everything persisted is keyed by subject id —
  * routes (`#/dsa/path`), the progress store, and the DynamoDB item. To add a
@@ -112,7 +106,8 @@ export const SUBJECTS: Subject[] = [
     short: "Trading",
     tagline: trading.TAGLINE,
     tiers: trading.MODULES,
-    phases: [],
+    phases: trading.PHASES,
+    resources: trading.RESOURCES,
     topics: trading.ALL_TOPICS,
     topicById: trading.TOPIC_BY_ID,
     badges: TRADING_BADGES,
@@ -121,10 +116,10 @@ export const SUBJECTS: Subject[] = [
       unit: "Module",
       unitShort: "M",
       pathIntro:
-        "Each module is one tool, taught until you can read it, compute it and test it. Education, not advice.",
+        "Each module is one tool or idea, taught until you can read it, compute it and test it. Price Dynamics (M2–M5) also has a 16-week plan under 'By week'. Education, not advice.",
       heroStart: "Start with the auction",
       heroBlurb:
-        "Watch the profile build on real-shaped NSE and MCX sessions, compute it yourself in code, then prove you can read it. A topic only counts when all three are done.",
+        "From reading the auction in a volume profile to where market randomness comes from and how to test against it. Learn each idea, practise it, then prove it. A topic only counts when all three are done.",
       unitsTitle: "Modules",
       unitsHint: "more modules follow; each unlocks at half the previous one",
       derivationTitle: "What the evidence says",
@@ -134,69 +129,22 @@ export const SUBJECTS: Subject[] = [
         "Darker means more XP that day. Short, regular sessions beat long irregular ones.",
     },
   },
-  {
-    id: "price-dynamics",
-    name: "Price Dynamics & Market Randomness",
-    short: "Price Dynamics",
-    tagline: "16 weeks · 4 tiers · from random walks to adaptive markets",
-    tiers: PRICE_TIERS,
-    phases: PRICE_PHASES,
-    topics: PRICE_ALL_TOPICS,
-    topicById: PRICE_TOPIC_BY_ID,
-    badges: PRICE_BADGES,
-    // No glossary of its own yet: an empty one links nothing, which is what
-    // `linkGlossary: false` asked for when the glossary was DSA's alone.
-    glossary: {},
-    linkGlossary: false,
-    copy: {
-      unit: "Tier",
-      unitShort: "T",
-      pathIntro:
-        "Four tiers of topics, or the same material laid out as the 16-week timeline.",
-      heroStart: "Start with the language of randomness",
-      heroBlurb:
-        "From random walks to adaptive markets: learn each idea, practise it, then prove it under quiz conditions. A topic only counts when all three are done.",
-      unitsTitle: "The four tiers",
-      unitsHint: "each tier unlocks at half the previous one",
-      derivationTitle: "Why it holds",
-      derivationHint: "the argument, not the answer",
-      yoursHint: (n) => `${n} from your own work`,
-      activityNote:
-        "Darker means more XP that day. Short, regular sessions beat long irregular ones.",
-    },
-    resources: [
-      {
-        title: "The (Mis)behavior of Markets",
-        author: "Benoit Mandelbrot and Richard Hudson",
-        note: "The intuitive entry point to scaling, fat tails, and the fractal view.",
-      },
-      {
-        title: "Trades, Quotes and Prices",
-        author: "Jean-Philippe Bouchaud and collaborators",
-        note: "The main bridge between market microstructure and econophysics.",
-      },
-      {
-        title: "Statistical Consequences of Fat Tails",
-        author: "Nassim Nicholas Taleb",
-        note: "A demanding treatment of what heavy tails do to statistical reasoning.",
-      },
-      {
-        title: "Adaptive Markets",
-        author: "Andrew W. Lo",
-        note: "The evolutionary account of why market patterns appear, compete, and decay.",
-      },
-    ],
-  },
 ];
 
 export const DEFAULT_SUBJECT_ID = "dsa";
 
 const BY_ID = new Map(SUBJECTS.map((s) => [s.id, s]));
 
+/** A retired subject id resolves to the subject that absorbed it. */
+export function resolveSubjectId(id: string): string | null {
+  const real = SUBJECT_ALIASES[id] ?? id;
+  return BY_ID.has(real) ? real : null;
+}
+
 export function getSubject(id: string): Subject {
-  return BY_ID.get(id) ?? SUBJECTS[0];
+  return BY_ID.get(resolveSubjectId(id) ?? "") ?? SUBJECTS[0];
 }
 
 export function isSubjectId(id: string): boolean {
-  return BY_ID.has(id);
+  return resolveSubjectId(id) !== null;
 }

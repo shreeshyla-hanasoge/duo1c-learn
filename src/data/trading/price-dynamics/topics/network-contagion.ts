@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const networkContagion: Topic = {
   id: "network-contagion",
   title: "Networks & contagion",
-  tier: 3,
+  tier: 5,
   week: 14,
   summary: "How common exposures, obligations, and forced selling transmit shocks between assets and institutions.",
   why: "During stress, correlations often rise because losses activate shared constraints. Network structure explains why a local shock can become a system-wide event.",

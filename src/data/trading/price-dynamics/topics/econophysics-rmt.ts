@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const econophysicsRmt: Topic = {
   id: "econophysics-rmt",
   title: "Scaling & random matrix theory",
-  tier: 2,
+  tier: 4,
   week: 12,
   summary: "Power laws, universality, and separating correlation signal from sampling noise.",
   why: "A sample correlation matrix contains an enormous amount of apparent structure even when the true assets are independent. Random matrix theory provides a noise benchmark.",

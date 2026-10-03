@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const priceImpact: Topic = {
   id: "price-impact",
   title: "Order flow & price impact",
-  tier: 1,
+  tier: 3,
   week: 6,
   summary: "Persistent trading pressure, liquidity response, and the square-root impact law.",
   why: "Trade signs are strongly persistent, yet returns are much less predictable. Understanding that apparent contradiction is central to how markets absorb large orders.",

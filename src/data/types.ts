@@ -260,6 +260,12 @@ export interface Tier {
   id: number;
   name: string;
   tagline: string;
+  /**
+   * Starts a track of its own: open from the outset instead of waiting for
+   * half of the unit before it. Trading's M2 (Price Dynamics) is one — it
+   * does not build on M1 (Volume Profile).
+   */
+  entry?: boolean;
   topics: Topic[];
   orientation?: TierOrientation;
 }

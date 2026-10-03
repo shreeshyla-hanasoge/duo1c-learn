@@ -118,8 +118,9 @@ export function TierView({ subject, id }: { subject: Subject; id: number }) {
 
         {!unlocked && (
           <p className="mt-3 rounded-lg border border-dashed border-line px-3 py-2 text-xs text-ink-3">
-            Locked — start half of Tier {tier.id - 1} to open this. You can
-            still read everything here; only the mastery credit waits.
+            Locked — start half of {subject.copy.unit} {tier.id - 1} to open
+            this. You can still read everything here; only the mastery credit
+            waits.
           </p>
         )}
       </div>
@@ -351,10 +352,11 @@ function TierLink({
         )}
         <div className={`min-w-0 flex-1 ${dir === "next" ? "text-right" : ""}`}>
           <p className="text-[10px] tracking-wide text-ink-3 uppercase">
-            {dir === "prev" ? "Previous tier" : "Next tier"}
+            {dir === "prev" ? "Previous" : "Next"}{" "}
+            {subject.copy.unit.toLowerCase()}
           </p>
           <p className="truncate text-sm">
-            Tier {tier.id} · {tier.name}
+            {subject.copy.unit} {tier.id} · {tier.name}
           </p>
         </div>
         {dir === "next" && (

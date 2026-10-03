@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const informationTheory: Topic = {
   id: "information-theory",
   title: "Entropy & information flow",
-  tier: 2,
+  tier: 4,
   week: 10,
   summary: "Quantifying uncertainty, nonlinear dependence, and directional information.",
   why: "Correlation sees one narrow kind of structure. Entropy, mutual information, permutation entropy, and transfer entropy ask more directly how much uncertainty the past removes.",

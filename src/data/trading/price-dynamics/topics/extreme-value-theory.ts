@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const extremeValueTheory: Topic = {
   id: "extreme-value-theory",
   title: "Extreme value theory",
-  tier: 2,
+  tier: 4,
   week: 9,
   summary: "Estimating tail shape, return levels, and losses beyond ordinary observations.",
   why: "Risk lives in sparse data. EVT focuses the model on extremes instead of letting thousands of ordinary days overwhelm the few observations that matter most.",

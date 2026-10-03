@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const signalProcessing: Topic = {
   id: "signal-processing",
   title: "Spectra, wavelets & 1/f noise",
-  tier: 2,
+  tier: 4,
   week: 11,
   summary: "Looking at variation by frequency and by scale without pretending the series is stationary everywhere.",
   why: "Markets mix activity from milliseconds to years. Spectral tools show where variance lives; wavelets show when and at what scale it appears.",

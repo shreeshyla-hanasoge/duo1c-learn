@@ -1,9 +1,9 @@
-import type { Topic } from "../../types.ts";
+import type { Topic } from "../../../types.ts";
 
 export const volatilityModels: Topic = {
   id: "volatility-models",
   title: "ARCH, GARCH & stochastic volatility",
-  tier: 0,
+  tier: 2,
   week: 3,
   summary: "How to model random direction with a conditionally predictable size.",
   why: "Raw returns often have little linear autocorrelation, yet absolute and squared returns remain dependent. Volatility models formalise that split.",

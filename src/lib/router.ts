@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { DEFAULT_SUBJECT_ID, isSubjectId } from "../data/subjects";
+import { DEFAULT_SUBJECT_ID, resolveSubjectId } from "../data/subjects";
 
 /**
  * A ~60-line hash router.
@@ -31,8 +31,11 @@ export function parseHash(hash: string): Route {
 
   // A leading segment naming a known subject selects it; anything else is a
   // pre-subject URL and falls back to the default, so old links keep working.
-  const subject =
-    parts.length && isSubjectId(parts[0]) ? parts.shift()! : DEFAULT_SUBJECT_ID;
+  // A retired subject id (price-dynamics) resolves to the subject that
+  // absorbed it, so bookmarks and shared links keep working.
+  const known = parts.length ? resolveSubjectId(parts[0]) : null;
+  if (known) parts.shift();
+  const subject = known ?? DEFAULT_SUBJECT_ID;
 
   const [head, ...rest] = parts;
 
