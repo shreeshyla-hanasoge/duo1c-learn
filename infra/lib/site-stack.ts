@@ -174,6 +174,10 @@ export class SiteStack extends Stack {
       // path-match its CSP — which means it must be invalidated explicitly.
       distributionPaths: ["/index.html", "/", "/assets/lab-worker.js"],
       prune: true,
+      // The deploy function unzips the whole site in memory-backed /tmp. At
+      // the 128 MB default it died silently once the concept films took dist/
+      // past ~60 MB, and CloudFormation waited an hour before rolling back.
+      memoryLimit: 1024,
     });
 
     this.distributionDomain = distribution.distributionDomainName;
