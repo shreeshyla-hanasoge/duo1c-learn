@@ -88,28 +88,31 @@ console.log("\n| Tier | Orientation | Arc stages | Topics in the arc |");
 console.log("| --- | --- | --- | --- |");
 
 const problems: string[] = [];
-for (const tier of TIERS) {
-  const o = tier.orientation;
-  if (!o) {
-    console.log(`| ${tier.id} | — | — | — |`);
-    problems.push(`T${tier.id} has no orientation (falls back to the topic list)`);
-    continue;
-  }
-  const inArc = new Set(o.arc.flatMap((s) => s.topics));
-  const missing = tier.topics.filter((t) => !inArc.has(t.id)).map((t) => t.id);
-  const unknown = [...inArc].filter(
-    (id) => !tier.topics.some((t) => t.id === id),
-  );
-  console.log(
-    `| ${tier.id} | yes | ${o.arc.length} | ` +
-      `${tier.topics.length - missing.length}/${tier.topics.length} |`,
-  );
-  if (missing.length)
-    problems.push(`T${tier.id} arc omits: ${missing.join(", ")}`);
-  if (unknown.length)
-    problems.push(
-      `T${tier.id} arc names topics not in this tier: ${unknown.join(", ")}`,
+for (const subject of SUBJECTS) {
+  const u = subject.copy.unitShort;
+  for (const tier of subject.tiers) {
+    const label = `${subject.short} ${u}${tier.id}`;
+    const o = tier.orientation;
+    if (!o) {
+      console.log(`| ${label} | — | — | — |`);
+      problems.push(`${label} has no orientation (falls back to the topic list)`);
+      continue;
+    }
+    const inArc = new Set(o.arc.flatMap((s) => s.topics));
+    const missing = tier.topics.filter((t) => !inArc.has(t.id)).map((t) => t.id);
+    const unknown = [...inArc].filter(
+      (id) => !tier.topics.some((t) => t.id === id),
     );
+    console.log(
+      `| ${label} | yes | ${o.arc.length} | ` +
+        `${tier.topics.length - missing.length}/${tier.topics.length} |`,
+    );
+    if (missing.length) problems.push(`${label} arc omits: ${missing.join(", ")}`);
+    if (unknown.length)
+      problems.push(
+        `${label} arc names topics not in this tier: ${unknown.join(", ")}`,
+      );
+  }
 }
 
 if (problems.length) {

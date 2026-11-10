@@ -8,12 +8,13 @@ import {
   type Topic,
 } from "./curriculum.ts";
 import { GLOSSARY, type Glossary } from "./glossary.ts";
-import { DSA_BADGES, TRADING_BADGES } from "./badges.ts";
+import { DSA_BADGES, SYSTEMS_BADGES, TRADING_BADGES } from "./badges.ts";
 import { SUBJECT_ALIASES, type BadgeDef } from "./progress-model.ts";
 import * as trading from "./trading/curriculum.ts";
+import * as systems from "./systems/curriculum.ts";
 
 /**
- * The platform hosts SUBJECTS: DSA and Trading concepts.
+ * The platform hosts SUBJECTS: DSA, Trading concepts and Trading system design.
  *
  * Everything user-facing and everything persisted is keyed by subject id —
  * routes (`#/dsa/path`), the progress store, and the DynamoDB item. To add a
@@ -127,6 +128,35 @@ export const SUBJECTS: Subject[] = [
       yoursHint: (n) => `${n} from your own platform`,
       activityNote:
         "Darker means more XP that day. Short, regular sessions beat long irregular ones.",
+    },
+  },
+  {
+    id: "system-design",
+    name: "Trading system design",
+    short: "System Design",
+    tagline: systems.TAGLINE,
+    tiers: systems.MODULES,
+    phases: systems.PHASES,
+    resources: systems.RESOURCES,
+    topics: systems.ALL_TOPICS,
+    topicById: systems.TOPIC_BY_ID,
+    badges: SYSTEMS_BADGES,
+    glossary: systems.GLOSSARY,
+    copy: {
+      unit: "Module",
+      unitShort: "M",
+      pathIntro:
+        "Six modules that follow an order through a trading platform: the market, the data, the engine, the broker, the bad day and the trade-offs. Every module is open — take them in order, or jump to the one you need to talk about tomorrow.",
+      heroStart: "Start by following one order",
+      heroBlurb:
+        "System design for trading platforms, worked through Traed. Learn the idea, decide a real design case, then prove it under quiz conditions. A topic only counts when all three are done.",
+      unitsTitle: "The six modules",
+      unitsHint: "all open — the order is a suggestion",
+      derivationTitle: "Why this design holds",
+      derivationHint: "the argument, and where it stops holding",
+      yoursHint: (n) => `${n} from Traed`,
+      activityNote:
+        "Darker means more XP that day. One topic a day, said out loud once, beats a weekend of reading.",
     },
   },
 ];

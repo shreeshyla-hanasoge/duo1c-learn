@@ -262,6 +262,35 @@ in `TRADING_BADGES`. The writing brief for the first module, with the evidence r
 `docs/trading/writing-brief.md`; sources and their reliability labels are in
 `docs/trading/sources.md`.
 
+### Trading system design
+
+The third subject (`system-design`): system design taught through financial markets and one
+worked example, Traed. Content lives in `src/data/systems/`: `curriculum.ts` (six modules
+with their orientations, the 12-week `PHASES`, resources), `topics/<id>.ts` (one file per
+lesson, ids prefixed `sd-`), `glossary.ts`. **34 topics · 272 quiz questions · 102 decision
+cases.** No visualisers and no labs — like DSA's Tier 5, every topic's Solve gate is
+`cases[]`.
+
+Every module sets `entry: true`, so all six are open from the start; the order is a
+suggestion. `copy.derivationTitle` is "Why this design holds", and the last `mechanics`
+entry of every topic is headed "Saying it about Traed" — a short spoken-style account of
+what Traed does, why, and what it gives up.
+
+The brief, with the content rules (nothing invented, every Traed claim checked against the
+Traed repository, nothing sensitive because the site is public) and the per-topic scope, is
+[docs/systems/writing-brief.md](./systems/writing-brief.md). The countable rules are
+enforced by a checker, which is not optional after touching a topic:
+
+```bash
+node --experimental-strip-types scripts/systems-check.mts            # all topics
+node --experimental-strip-types scripts/systems-check.mts sd-caching # just these
+```
+
+Traed changes, so these lessons go stale in a way DSA's do not. Where the Traed code and
+its own docs disagreed at the time of writing (November 2026), the lessons follow the code.
+The whole subject adds about 1 MB to the main bundle (about 300 kB gzipped); loading a
+subject's topics lazily is the natural fix if that starts to matter.
+
 After touching anything under `engine/trading/` or a trading scenario:
 
 ```bash

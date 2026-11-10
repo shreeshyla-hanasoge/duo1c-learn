@@ -123,3 +123,23 @@ export const TRADING_BADGES: BadgeDef[] = [
   common.complete,
 ];
 
+
+/**
+ * Trading system design badges. One per module, named for what the reader
+ * can now do. Ids name the module, never its position.
+ */
+export const SYSTEMS_BADGES: BadgeDef[] = [
+  common.firstBlood,
+  unitBadge("sd-map", "Cartographer of Orders", "Master every M1 topic", 1),
+  unitBadge("sd-data", "Tick Plumber", "Master every M2 topic", 2),
+  unitBadge("sd-engine", "Single Writer", "Master every M3 topic", 3),
+  unitBadge("sd-orders", "Reconciled", "Master every M4 topic", 4),
+  unitBadge("sd-reliability", "Calm on the Bad Day", "Master every M5 topic", 5),
+  unitBadge("sd-judgment", "Defends the Trade-off", "Master every M6 topic", 6),
+  common.flawless,
+  common.streak7,
+  common.streak30,
+  common.arena10,
+  common.halfway,
+  common.complete,
+];
