@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdBacktestLiveParity: Topic = {
   id: "sd-backtest-live-parity",
   title: "Backtest, paper and live: one code path",
-  tier: 3,
-  week: 6,
+  tier: 9,
+  week: 18,
   depth: "deep",
   summary:
     "A backtest is only evidence if its code is the code that trades. Share the decision logic, swap the data source and order adapter, and test the seam.",
@@ -121,6 +121,21 @@ export const sdBacktestLiveParity: Topic = {
       evidence: "strategy-engine/tests/test_backtest_paper_parity_avwap.py",
       impact:
         "A disagreement becomes a failing test with a reproducible input, instead of a surprise trade.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Adapter (ports and adapters) pattern",
+      role: "Keeps one decision core and swaps only the data source and order sender at the edges, so backtest and live cannot drift apart.",
+    },
+    {
+      name: "Event-driven bar replay",
+      role: "Feeds historical bars to the strategy one at a time in order, so it can only act on information that existed at that moment.",
+      dsa: "sliding-window",
+    },
+    {
+      name: "Golden-output parity test",
+      role: "Runs the same recorded input through both paths and compares decisions line by line, catching any divergence at the seam before real money is involved.",
     },
   ],
   insights: [

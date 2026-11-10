@@ -125,17 +125,23 @@ export const TRADING_BADGES: BadgeDef[] = [
 
 
 /**
- * Trading system design badges. One per module, named for what the reader
- * can now do. Ids name the module, never its position.
+ * System design badges. One per module, named for what the reader can now
+ * do. Ids name the module, never its position. (The subject first shipped
+ * with six modules; when it grew to ten the modules were regrouped, so the
+ * six original ids were retired rather than given new meanings.)
  */
 export const SYSTEMS_BADGES: BadgeDef[] = [
   common.firstBlood,
-  unitBadge("sd-map", "Cartographer of Orders", "Master every M1 topic", 1),
-  unitBadge("sd-data", "Tick Plumber", "Master every M2 topic", 2),
-  unitBadge("sd-engine", "Single Writer", "Master every M3 topic", 3),
-  unitBadge("sd-orders", "Reconciled", "Master every M4 topic", 4),
-  unitBadge("sd-reliability", "Calm on the Bad Day", "Master every M5 topic", 5),
-  unitBadge("sd-judgment", "Defends the Trade-off", "Master every M6 topic", 6),
+  unitBadge("sd-blocks", "Scales on Paper", "Master every M1 topic", 1),
+  unitBadge("sd-storage", "Reads the Index", "Master every M2 topic", 2),
+  unitBadge("sd-distributed", "Quorum Reached", "Master every M3 topic", 3),
+  unitBadge("sd-coordination", "Elected Leader", "Master every M4 topic", 4),
+  unitBadge("sd-streams", "At Least Once", "Master every M5 topic", 5),
+  unitBadge("sd-algorithms", "Probably Correct", "Master every M6 topic", 6),
+  unitBadge("sd-ops", "Calm on the Bad Day", "Master every M7 topic", 7),
+  unitBadge("sd-architecture", "Draws the Boundary", "Master every M8 topic", 8),
+  unitBadge("sd-trading", "Reconciled", "Master every M9 topic", 9),
+  unitBadge("sd-designs", "Defends the Trade-off", "Master every M10 topic", 10),
   common.flawless,
   common.streak7,
   common.streak30,

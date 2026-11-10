@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdPlatformAnatomy: Topic = {
   id: "sd-platform-anatomy",
   title: "Anatomy of a trading platform",
-  tier: 1,
-  week: 1,
+  tier: 9,
+  week: 17,
   depth: "deep",
   summary:
     "Every trading platform has the same five boxes. A hedge fund and a retail algo differ in size and speed, not in shape. C4 draws them at four zoom levels.",
@@ -119,6 +119,21 @@ export const sdPlatformAnatomy: Topic = {
         "strategy-engine/app/services/execution_modes/interfaces.py; ARCHITECTURE.md section 7",
       impact:
         "The boundary between the decision box and the data and order boxes is an interface, not a network call.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Publish-subscribe fan-out",
+      role: "Lets the feed publish each tick once and any number of strategies, charts and recorders consume it without the feed knowing who they are.",
+    },
+    {
+      name: "Directed graph of components",
+      role: "Represents boxes as nodes and data flows as arrows, so you can see what depends on what and where a failure spreads.",
+      dsa: "graph-representations",
+    },
+    {
+      name: "Write-ahead journal",
+      role: "Records every event durably before acting on it, so a single-threaded core can be restarted and rebuilt from its own history.",
     },
   ],
   insights: [

@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdOrderManagement: Topic = {
   id: "sd-order-management",
   title: "Order management",
-  tier: 4,
-  week: 7,
+  tier: 9,
+  week: 17,
   depth: "deep",
   summary:
     "An order management system owns the life of every order: its state, its fills, its limits and its record. The broker decides; the OMS remembers and enforces.",
@@ -121,6 +121,21 @@ export const sdOrderManagement: Topic = {
       evidence: "strategy-engine/app/services/live_order_sweep.py; strategy-engine/app/services/order_management/order_manager.py (_update_order_from_broker_status)",
       impact:
         "A tranche is booked once, whichever reader sees it first, and a late fill can no longer go unnoticed.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Order state machine",
+      role: "Allows only legal moves such as new, partially filled, filled or rejected, so a late or repeated broker message cannot corrupt an order.",
+    },
+    {
+      name: "Volume-weighted average price",
+      role: "Combines partial fills by quantity into one entry price, which is what the position and profit calculations rest on.",
+      dsa: "prefix-sums",
+    },
+    {
+      name: "Quantity slicing against a freeze limit",
+      role: "Splits a parent order into child orders no larger than the exchange cap, then tracks them back to the parent.",
     },
   ],
   insights: [

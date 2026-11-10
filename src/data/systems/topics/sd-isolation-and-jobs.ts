@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdIsolationAndJobs: Topic = {
   id: "sd-isolation-and-jobs",
   title: "Workload isolation and job queues",
-  tier: 3,
-  week: 6,
+  tier: 7,
+  week: 13,
   depth: "deep",
   summary:
     "Heavy work must not share a failure domain with live trading. Bulkheads, a bounded job queue and honest job states keep slow work from hurting fast work.",
@@ -121,6 +121,22 @@ export const sdIsolationAndJobs: Topic = {
       evidence: "strategy-engine/app/services/backtest_recovery.py",
       impact:
         "A restart leaves resubmitted or failed runs, not frozen ones. The assumption is one engine instance owning the database.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Bounded FIFO job queue",
+      role: "Holds pending jobs in arrival order with a fixed capacity, so heavy work waits its turn instead of starving live trading.",
+      dsa: "stacks-queues",
+    },
+    {
+      name: "Worker pool with a concurrency limit",
+      role: "Runs at most a fixed number of jobs at once, which caps memory and CPU use and protects the processes that must stay fast.",
+      dsa: "concurrency",
+    },
+    {
+      name: "Job state machine",
+      role: "Moves each job through queued, running, done or failed with only legal transitions, so stuck jobs can be detected and reported honestly.",
     },
   ],
   insights: [

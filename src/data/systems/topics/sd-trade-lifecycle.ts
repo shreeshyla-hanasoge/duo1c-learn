@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdTradeLifecycle: Topic = {
   id: "sd-trade-lifecycle",
   title: "The life of an order",
-  tier: 1,
-  week: 1,
+  tier: 9,
+  week: 17,
   depth: "deep",
   summary:
     "An order passes through your platform, a broker, an exchange and a clearing house. Each knows different things, and an acknowledgement is not a fill.",
@@ -120,6 +120,20 @@ export const sdTradeLifecycle: Topic = {
         "The order model has pending, submitted, acknowledged, partial, filled, cancelled, rejected, expired and unverified states. Unverified is terminal for the engine but says only that the outcome was not learned. Every engine order is a day order, so yesterday's orders cannot still be working.",
       evidence:
         "strategy-engine/app/services/order_management/models.py; docs/live-readiness.md; docs/LLD.md",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Order state machine",
+      role: "Tracks an order through sent, acknowledged, partially filled, filled or rejected, keeping what each party believes separate from what actually happened.",
+    },
+    {
+      name: "Polling with exponential backoff",
+      role: "Asks the broker for status at growing intervals when no streamed report arrives, resolving a missing answer without hammering the API.",
+    },
+    {
+      name: "Sequence-number reconciliation",
+      role: "Detects dropped execution reports by checking that message numbers arrive in order, then requests a resend of the gap.",
     },
   ],
   insights: [

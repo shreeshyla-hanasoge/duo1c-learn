@@ -1,4 +1,4 @@
-# Writing brief — Trading system design
+# Writing brief — System design
 
 The brief every topic in `src/data/systems/topics/` is written against. Keep it for
 later topics: the same rules apply.
@@ -299,3 +299,189 @@ Paths are relative to the Traed repository root.
   stating limits before being asked. Traed: `docs/HLD.md`, `docs/LLD.md`,
   `ARCHITECTURE.md`, `docs/pitch/` (honesty-and-gaps memo). The mechanics here should build
   an actual two-minute script for Traed.
+
+
+---
+
+# Part 2 — the standard canon (added when the course was broadened)
+
+The first 34 topics grew out of how Traed is built. The reader then asked for the course to
+cover **standard system design and its algorithms** in full, with real cases, using Traed
+as an analogy only where it helps. Everything above still applies, with these changes.
+
+## What changes for every topic (old and new)
+
+- **Concept first.** A topic teaches the general idea as any good system-design text would.
+  Real, well-documented systems carry the examples (Dynamo, Cassandra, Kafka, Raft/etcd,
+  Redis, PostgreSQL, Bigtable/LSM stores, Google's Chubby and Spanner, CDNs, UPI, IRCTC,
+  NSE). Traed is one example among them, not the frame.
+- **`algorithms`** (new field, 2–4 entries): the named algorithms and data structures the
+  design leans on, each `{ name, role, dsa? }`. `role` is one sentence on the job it does
+  in THIS design. `dsa` is the id of the DSA lesson that teaches it, when one exists, and
+  renders as a link — set it whenever a listed lesson genuinely covers the structure. DSA
+  lesson ids you may link: `hashing`, `heaps`, `tries`, `lru`, `probabilistic` (Bloom
+  filters, HyperLogLog, count-min), `skip-lists`, `ring-buffers`, `spatial` (quadtrees,
+  k-d trees, geohash), `time-series`, `intervals`, `sorting`, `binary-search`,
+  `balanced-trees`, `bst`, `graph-representations`, `bfs`, `dfs`, `toposort`,
+  `shortest-paths`, `dsu`, `mst`, `segment-tree`, `fenwick`, `sliding-window`,
+  `monotonic-deque`, `prefix-sums`, `string-algos`, `concurrency`, `amortised-latency`,
+  `approximation`, `structure-choice`, `stacks-queues`, `linked-lists`, `bit-manipulation`,
+  `state-machine-dp`. An algorithm with no DSA lesson (Raft, consistent hashing, Merkle
+  trees, token bucket) is still listed, without `dsa`.
+- It is fine, and wanted, to name and explain an algorithm inside `mechanics` — how
+  consistent hashing places a key, how a token bucket refills, how Raft elects a leader —
+  with a small worked number.
+
+## What is different for the 35 new topics
+
+- **The last `mechanics` entry is headed `In Traed's terms`** (not "Saying it about
+  Traed"). 70–110 words. Map the idea onto Traed honestly: where Traed already does a small
+  version of it, what the nearest thing is, or — often the true answer — why a one-server
+  platform does not need it yet and what would make it necessary. Check any claim about
+  what Traed does against the Traed repository; "Traed does not do this" needs no evidence
+  but must be true.
+- **`realWorld`: exactly 4, at least 3 `industry`.** A `yours` (Traed) case is optional and
+  only when the repository really shows it.
+- `why` (60–100 words) is about why an engineer needs the concept, with at most one
+  sentence on Traed.
+- Decision cases: at least one at Indian-internet scale (UPI, IRCTC Tatkal, a festival
+  sale, an exchange at the open) and at least one small-team case, so the answer changes
+  with scale.
+- `tier` and `week` are as listed below.
+
+## The new topic list
+
+### M1 · Building blocks (tier 1)
+
+- `sd-scaling-basics` / `sdScalingBasics` — **Scaling: from one server to many** (week 1).
+  Vertical versus horizontal; stateless services and where state goes; the usual journey
+  (one box → separate database → replicas → cache → load balancer → queue → shards);
+  bottleneck hunting; why premature scaling costs.
+- `sd-load-balancing` / `sdLoadBalancing` — **Load balancing** (week 1). Layer 4 versus
+  layer 7; algorithms (round robin, weighted, least connections, power of two choices,
+  hashing); health checks; sticky sessions; connection draining; the balancer as a single
+  point of failure.
+- `sd-dns-cdn` / `sdDnsCdn` — **DNS, CDNs and the edge** (week 2). Resolution and TTLs;
+  DNS-based routing and failover; CDN caching, cache keys, invalidation; origin shielding;
+  static versus dynamic; object storage behind a CDN.
+- `sd-api-design` / `sdApiDesign` — **API design and protocols** (week 2). REST, gRPC,
+  GraphQL in brief; polling, long polling, server-sent events, WebSocket; pagination
+  (offset versus cursor); versioning; idempotent methods; timeouts and error contracts.
+
+### M2 · Storage and data modelling (tier 2)
+
+- `sd-data-models` / `sdDataModels` — **Choosing a data model** (week 3). Relational,
+  document, key-value, wide-column, graph; normalise versus denormalise; access patterns
+  first; polyglot persistence and its cost.
+- `sd-indexes-btree-lsm` / `sdIndexesBtreeLsm` — **Indexes: B-trees and LSM trees**
+  (week 3). What an index is; B-tree pages and write-ahead log; LSM memtable, SSTables,
+  compaction; read versus write amplification; composite and covering indexes.
+- `sd-transactions-isolation` / `sdTransactionsIsolation` — **Transactions and isolation
+  levels** (week 4). ACID; read committed, repeatable read, serializable; MVCC; lost
+  update, write skew, phantom; optimistic versus pessimistic locking; deadlocks.
+- `sd-search-index` / `sdSearchIndex` — **Search and the inverted index** (week 4).
+  Tokenising; postings lists; ranking in brief (TF-IDF/BM25 named, not derived); near
+  real-time indexing; search as a derived store; Elasticsearch/Lucene as the example.
+
+### M3 · Distributed data (tier 3)
+
+- `sd-replication` / `sdReplication` — **Replication** (week 5). Leader–follower,
+  multi-leader, leaderless; synchronous versus asynchronous; replication lag and its
+  anomalies; failover and split brain.
+- `sd-partitioning` / `sdPartitioning` — **Partitioning and sharding** (week 5). Range
+  versus hash partitioning; hot keys and skew; secondary indexes across shards;
+  rebalancing; cross-shard queries.
+- `sd-consistent-hashing` / `sdConsistentHashing` — **Consistent hashing** (week 5). The
+  ring; why `hash mod n` reshuffles everything; virtual nodes; rendezvous hashing; bounded
+  load; uses (caches, Dynamo, load balancers).
+- `sd-cap-quorums` / `sdCapQuorums` — **CAP, PACELC and quorums** (week 6). What CAP
+  actually says; PACELC; linearizability versus eventual; quorum reads and writes
+  (R + W > N); sloppy quorums; tunable consistency.
+- `sd-distributed-transactions` / `sdDistributedTransactions` — **Distributed
+  transactions: 2PC, sagas and the outbox** (week 6). Two-phase commit and its blocking
+  problem; sagas with compensation; transactional outbox; try-confirm-cancel; when to
+  avoid needing one.
+- `sd-distributed-ids` / `sdDistributedIds` — **Unique IDs at scale** (week 6).
+  Auto-increment limits; UUID versions; Snowflake-style (time + machine + sequence);
+  ULID/UUIDv7; clock rollback; why sortable ids matter to indexes.
+
+### M4 · Coordination and time (tier 4)
+
+- `sd-logical-clocks` / `sdLogicalClocks` — **Ordering events: logical clocks** (week 7).
+  Why wall clocks fail; Lamport timestamps; vector clocks and concurrent writes;
+  last-write-wins and what it loses; hybrid logical clocks; CRDTs in one paragraph.
+- `sd-consensus` / `sdConsensus` — **Consensus and Raft** (week 7). What consensus
+  guarantees; leader election with terms; log replication and commit by majority; why 3 or
+  5 nodes; where it is used (etcd, ZooKeeper, Kafka's controller); Paxos named only.
+- `sd-locks-leases` / `sdLocksLeases` — **Distributed locks, leases and fencing**
+  (week 8). Why a lock with a timeout is a lease; the paused-process problem; fencing
+  tokens; leader election on top of a lock service; Redis-style locks and their limits.
+- `sd-gossip-failure-detection` / `sdGossipFailureDetection` — **Gossip and failure
+  detection** (week 8). Heartbeats and timeouts; why "dead" is a guess; gossip
+  dissemination; phi-accrual detectors; membership (SWIM); flapping.
+- `sd-merkle-antientropy` / `sdMerkleAntientropy` — **Merkle trees and repairing
+  replicas** (week 8). Hash trees; comparing two replicas cheaply; read repair, hinted
+  handoff, anti-entropy; the same idea in Git and blockchains.
+
+### M5 · Messaging and streams (tier 5)
+
+- `sd-queues-and-logs` / `sdQueuesAndLogs` — **Message queues and logs** (week 9). Queue
+  versus log; Kafka's partitions, offsets and consumer groups; ordering guarantees;
+  dead-letter queues; retention; when a queue is the wrong tool.
+- `sd-batch-and-cdc` / `sdBatchAndCdc` — **Batch, streams and change data capture**
+  (week 10). Batch versus stream; the MapReduce idea; lambda versus kappa; CDC from the
+  database log; derived data and reprocessing.
+
+### M6 · Algorithms that scale (tier 6)
+
+- `sd-bloom-filters` / `sdBloomFilters` — **Bloom filters** (week 11). Definite no,
+  probable yes; bits and hash functions; false-positive rate and sizing; no deletion and
+  counting variants; uses (LSM reads, caches, crawlers).
+- `sd-cardinality-topk` / `sdCardinalityTopk` — **Counting at scale: HyperLogLog and
+  count-min sketch** (week 11). Distinct counts in kilobytes; heavy hitters and top-K;
+  error bounds in plain words; mergeability; where exact counting is still right.
+- `sd-geo-indexing` / `sdGeoIndexing` — **Geospatial indexing** (week 11). Nearby search;
+  geohash and its edge problem; quadtrees; Google's S2 and Uber's H3 named; moving objects.
+- `sd-typeahead-tries` / `sdTypeaheadTries` — **Typeahead and tries** (week 12). Prefix
+  lookup; top-k per prefix; caching per prefix; offline builds versus live updates;
+  ranking freshness.
+- `sd-timers-and-scheduling` / `sdTimersAndScheduling` — **Timers and job scheduling**
+  (week 12). Min-heap of deadlines; timing wheels; delayed queues; cron at scale and
+  exactly-one execution; missed-run policy.
+
+### M10 · Classic designs (tier 10)
+
+These are end-to-end design walk-throughs. Their four concept `mechanics` entries follow
+the design method in order — (1) requirements and scale, with rough numbers; (2) API and
+data model; (3) the high-level design; (4) the hard part, where the design is won or lost —
+then (5) `In Traed's terms`. `algorithms` lists what the design uses and links back to DSA.
+
+- `sd-design-method` / `sdDesignMethod` — **A method for any design question** (week 19).
+  Requirements (functional, non-functional) → estimates → API → data model → high-level
+  design → deep dives → bottlenecks and failure. Here the four entries teach the method
+  itself, with a small running example.
+- `sd-design-url-shortener` / `sdDesignUrlShortener` — **Design a URL shortener**
+  (week 19). Id generation and base-62; read-heavy caching; redirects; custom aliases;
+  expiry; analytics as a stream.
+- `sd-design-key-value-store` / `sdDesignKeyValueStore` — **Design a distributed
+  key-value store** (week 19). The Dynamo design: partitioning by consistent hashing,
+  replication, quorums, vector clocks, gossip, Merkle repair — the module 3 and 4 ideas
+  assembled.
+- `sd-design-news-feed` / `sdDesignNewsFeed` — **Design a news feed** (week 19). Fan-out
+  on write versus on read; the celebrity problem; ranking; feed cache.
+- `sd-design-chat` / `sdDesignChat` — **Design a chat system** (week 20). Persistent
+  connections; message ordering and ids; delivery receipts; presence; offline delivery;
+  group fan-out.
+- `sd-design-notifications` / `sdDesignNotifications` — **Design a notification system**
+  (week 20). Channels (push, SMS, email); queues per channel; retries and de-duplication;
+  user preferences and rate caps; provider failover.
+- `sd-design-payments` / `sdDesignPayments` — **Design a payment system** (week 20).
+  UPI-style flow in outline; idempotency keys; double-entry ledger; state machine for a
+  payment; reconciliation with the bank; never losing or doubling money.
+- `sd-design-ticket-booking` / `sdDesignTicketBooking` — **Design a ticket booking system**
+  (week 20). IRCTC Tatkal as the example: inventory contention, seat holds with expiry,
+  queueing the surge, fairness, payment timeout.
+- `sd-design-stock-exchange` / `sdDesignStockExchange` — **Design a stock exchange**
+  (week 20). Gateway → sequencer → matching engine → market-data publisher; single-threaded
+  matching; order book structures; determinism and replay; pre-trade risk. Here a `yours`
+  case on how a retail platform sits on the other side of this design is welcome.

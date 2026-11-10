@@ -124,6 +124,23 @@ export const sdTimeseriesStorage: Topic = {
         "Backup effort is aimed at tables whose loss cannot be repaired by re-fetching from a vendor.",
     },
   ],
+  algorithms: [
+    {
+      name: "B-tree composite index",
+      role: "Orders rows by symbol then time, so a symbol-and-range query reads one contiguous run instead of scanning the table.",
+      dsa: "balanced-trees",
+    },
+    {
+      name: "Binary search on a sorted key",
+      role: "Jumps straight to the start of a time range within a sorted partition, so reading a month of bars begins in logarithmic time.",
+      dsa: "binary-search",
+    },
+    {
+      name: "Run-length and delta encoding",
+      role: "Stores differences between neighbouring values compactly, which is why columnar time-series files are so much smaller than rows.",
+      dsa: "time-series",
+    },
+  ],
   insights: [
     {
       t: "Questions decide the key",

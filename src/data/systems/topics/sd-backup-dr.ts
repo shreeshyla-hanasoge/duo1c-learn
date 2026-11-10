@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdBackupDr: Topic = {
   id: "sd-backup-dr",
   title: "Backup, restore and disaster recovery",
-  tier: 5,
-  week: 10,
+  tier: 7,
+  week: 14,
   depth: "deep",
   summary:
     "A backup is only real once you have restored from it. Learn RPO and RTO, tiered backups, off-box copies, restore drills and why dev must never touch prod data.",
@@ -115,6 +115,21 @@ export const sdBackupDr: Topic = {
       evidence: "docs/plans/backup-restore-design.md; deployment-scripts/backup/README.md; deployment-scripts/backup/restore-drill.sh",
       impact:
         "Steady-state cost measured at about 0.74 US dollars a month, with a drill that passed with matching row counts.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Full plus incremental backup chain",
+      role: "Takes a complete copy occasionally and small changes in between, trading restore complexity for far less storage and time per backup.",
+    },
+    {
+      name: "Write-ahead log shipping",
+      role: "Streams the database's change log off the machine continuously, so a restore can replay forward to a chosen moment and shrink the data-loss window.",
+    },
+    {
+      name: "Checksum verification",
+      role: "Compares a hash of the restored data with the original, so a silently corrupt backup is found in a drill rather than during a disaster.",
+      dsa: "hashing",
     },
   ],
   insights: [

@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdMultiTenancy: Topic = {
   id: "sd-multi-tenancy",
   title: "Multi-tenancy: from one user to many",
-  tier: 6,
-  week: 11,
+  tier: 8,
+  week: 15,
   depth: "deep",
   summary:
     "Many users can share one system if data, credentials, connections and limits are separated per user, and heavy work is shared fairly.",
@@ -121,6 +121,21 @@ export const sdMultiTenancy: Topic = {
       evidence: "strategy-engine/app/services/backtest_dispatch.py",
       impact:
         "The live loop is protected from heavy jobs. Fairness between users beyond the optimiser is still open work.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Composite key with tenant prefix",
+      role: "Puts the tenant id first in every key and index, so one user's rows can never be read through another's query.",
+    },
+    {
+      name: "Token bucket per tenant",
+      role: "Gives each user their own refilling allowance of calls, so one heavy user cannot consume everyone's shared broker limit.",
+    },
+    {
+      name: "Round-robin fair queueing",
+      role: "Serves one job from each user in turn, so a long backlog from one tenant does not make everyone else wait behind it.",
+      dsa: "stacks-queues",
     },
   ],
   insights: [

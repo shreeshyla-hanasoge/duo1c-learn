@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdFeedHealth: Topic = {
   id: "sd-feed-health",
   title: "Feed health and staleness detection",
-  tier: 2,
-  week: 4,
+  tier: 7,
+  week: 13,
   depth: "deep",
   summary:
     "A running process is not a healthy feed. Measure time since the last tick per instrument, only while its market is open, and alert without crying wolf.",
@@ -122,6 +122,22 @@ export const sdFeedHealth: Topic = {
         "strategy-engine/app/services/data_processing/direct_kite_ticker.py; strategy-engine/app/api/api_v1/endpoints/ops.py; strategy-engine/app/services/ops_alerting.py; docs/incidents/2026-11-09-ticker-alias-silent-feed.md",
       impact:
         "The November alias bug paged correctly for a strategy that never received ticks, which pointed straight at the real fault.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Last-seen timestamp per key",
+      role: "Stores the time of the latest tick for each instrument, so staleness is a subtraction rather than a search.",
+      dsa: "hashing",
+    },
+    {
+      name: "Sliding-window rate estimate",
+      role: "Counts ticks over a recent period to tell a normally quiet instrument from a dead one without false alarms.",
+      dsa: "sliding-window",
+    },
+    {
+      name: "Sequence-number gap detection",
+      role: "Notices a missing number in an ordered stream, which exposes lost messages even when the connection looks healthy.",
     },
   ],
   insights: [

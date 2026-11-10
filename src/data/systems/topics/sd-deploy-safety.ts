@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdDeploySafety: Topic = {
   id: "sd-deploy-safety",
   title: "Deploying while the market is open",
-  tier: 5,
-  week: 10,
+  tier: 7,
+  week: 14,
   depth: "deep",
   summary:
     "A deploy changes a system that may hold real positions. Learn atomic releases, safe migrations and the gates that stop a restart at the wrong time.",
@@ -115,6 +115,21 @@ export const sdDeploySafety: Topic = {
       evidence: ".github/workflows/deploy.yml; .github/workflows/migrate.yml",
       impact:
         "Production changes have one entry door and run one at a time.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Atomic symlink swap",
+      role: "Builds the new release beside the old one, then repoints a single link, so a deploy flips in one step and rolls back the same way.",
+    },
+    {
+      name: "Expand-then-contract migration ordering",
+      role: "Orders schema changes so the new column exists before code uses it and the old one is removed only after, keeping both versions safe.",
+    },
+    {
+      name: "Topological ordering of release steps",
+      role: "Sorts steps by their dependencies, so migrations, config and restarts always run in an order that never leaves something half-built.",
+      dsa: "toposort",
     },
   ],
   insights: [

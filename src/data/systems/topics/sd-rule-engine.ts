@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdRuleEngine: Topic = {
   id: "sd-rule-engine",
   title: "Rule engines: strategies as data",
-  tier: 3,
-  week: 5,
+  tier: 8,
+  week: 16,
   depth: "deep",
   summary:
     "A strategy stored as data is a small tree of conditions that one evaluator can read. The hard parts are one shared meaning and missing data.",
@@ -120,6 +120,22 @@ export const sdRuleEngine: Topic = {
       evidence: "docs/engineering/unify-condition-evaluators.md",
       impact:
         "A worked example of migrating in order of risk: shared core first, backtests next, live last.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Expression tree evaluation",
+      role: "Walks the stored condition tree depth first, combining operand values with and, or and comparison nodes into one yes or no.",
+      dsa: "dfs",
+    },
+    {
+      name: "Hash map resolver",
+      role: "Looks up each operand name to the function that produces its value, so storage holds names and one shared resolver owns the meaning.",
+      dsa: "hashing",
+    },
+    {
+      name: "Crossover detection on two bars",
+      role: "Compares the previous and current values of two series to tell a true cross from one that is simply already above.",
     },
   ],
   insights: [

@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdTimeAndSessions: Topic = {
   id: "sd-time-and-sessions",
   title: "Time, clocks and market sessions",
-  tier: 1,
-  week: 2,
+  tier: 4,
+  week: 7,
   depth: "deep",
   summary:
     "Time is data with a zone, an edge and a calendar. Name the zone, say whether a bar is stamped at open or close, and never assume a market is open.",
@@ -123,6 +123,22 @@ export const sdTimeAndSessions: Topic = {
         "strategy-engine/app/services/market_calendar.py; CMS/shared/market_holidays.json; docs/mcx-futures-data.md",
       impact:
         "Holidays stop being outages, and a missing yearly calendar logs a warning instead of failing quietly.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Binary search over a sorted calendar",
+      role: "Finds the session or holiday covering a given instant in logarithmic time, so is-the-market-open stays cheap.",
+      dsa: "binary-search",
+    },
+    {
+      name: "Interval overlap check",
+      role: "Tests whether an instant or bar falls inside a session window, including breaks and half-days, using start and end times.",
+      dsa: "intervals",
+    },
+    {
+      name: "Watermark for event time",
+      role: "Tracks how far event time has safely progressed despite late arrivals, separating the clock on the wall from the time in the data.",
     },
   ],
   insights: [

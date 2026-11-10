@@ -14,7 +14,7 @@ import * as trading from "./trading/curriculum.ts";
 import * as systems from "./systems/curriculum.ts";
 
 /**
- * The platform hosts SUBJECTS: DSA, Trading concepts and Trading system design.
+ * The platform hosts SUBJECTS: DSA, Trading concepts and System design.
  *
  * Everything user-facing and everything persisted is keyed by subject id —
  * routes (`#/dsa/path`), the progress store, and the DynamoDB item. To add a
@@ -132,7 +132,7 @@ export const SUBJECTS: Subject[] = [
   },
   {
     id: "system-design",
-    name: "Trading system design",
+    name: "System design",
     short: "System Design",
     tagline: systems.TAGLINE,
     tiers: systems.MODULES,
@@ -146,11 +146,11 @@ export const SUBJECTS: Subject[] = [
       unit: "Module",
       unitShort: "M",
       pathIntro:
-        "Six modules that follow an order through a trading platform: the market, the data, the engine, the broker, the bad day and the trade-offs. Every module is open — take them in order, or jump to the one you need to talk about tomorrow.",
-      heroStart: "Start by following one order",
+        "Ten modules: the building blocks, storage, distributed data, coordination, messaging, the algorithms that make it scale, reliability, architecture, trading platforms end to end, and the classic designs. Every module is open — take them in order, or jump to the one you need tomorrow.",
+      heroStart: "Start with the building blocks",
       heroBlurb:
-        "System design for trading platforms, worked through Traed. Learn the idea, decide a real design case, then prove it under quiz conditions. A topic only counts when all three are done.",
-      unitsTitle: "The six modules",
+        "Standard system design and the algorithms inside it, taught with real cases. Watch the data flow, learn the idea, decide a real design case, then prove it under quiz conditions. A topic only counts when all three are done.",
+      unitsTitle: "The ten modules",
       unitsHint: "all open — the order is a suggestion",
       derivationTitle: "Why this design holds",
       derivationHint: "the argument, and where it stops holding",

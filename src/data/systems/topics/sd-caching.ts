@@ -4,7 +4,7 @@ export const sdCaching: Topic = {
   id: "sd-caching",
   title: "Caching and pre-warming",
   tier: 2,
-  week: 4,
+  week: 3,
   depth: "deep",
   summary:
     "A cache is a copy you can afford to lose. Learn cache-aside, TTLs, eviction, pre-warming, and why an unrebuildable record must never live only there.",
@@ -122,6 +122,23 @@ export const sdCaching: Topic = {
         "strategy-engine/app/services/order_management/order_manager.py; strategy-engine/app/services/live_persistence.py; strategy-engine/app/services/risk_breaker.py",
       impact:
         "An eviction is now healed within minutes, instead of being noticed at the next restart.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "LRU eviction",
+      role: "Drops the entry untouched for longest when memory is full, on the bet that recent use predicts near-future use.",
+      dsa: "lru",
+    },
+    {
+      name: "Hash map",
+      role: "Gives constant-time lookup from a cache key to its stored value, which is what makes a hit so much cheaper than a source read.",
+      dsa: "hashing",
+    },
+    {
+      name: "TTL expiry with a min-heap or timing wheel",
+      role: "Finds the next entry due to expire without scanning everything, so lifetimes such as 60 seconds cost almost nothing to enforce.",
+      dsa: "heaps",
     },
   ],
   insights: [

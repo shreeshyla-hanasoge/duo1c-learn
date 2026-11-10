@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdRateLimitsBreakers: Topic = {
   id: "sd-rate-limits-breakers",
   title: "Rate limits, retries and circuit breakers",
-  tier: 4,
-  week: 8,
+  tier: 6,
+  week: 12,
   depth: "deep",
   summary:
     "Brokers cap how fast you may call them. Pace yourself with a token bucket, retry with jittered backoff only what is safe, and stop calling a failing broker.",
@@ -123,6 +123,25 @@ export const sdRateLimitsBreakers: Topic = {
         "strategy-engine/src/brokers/trading_interface.py; strategy-engine/app/services/execution_modes/order_executors.py; docs/live-readiness.md",
       impact:
         "Duplicate-order risk from retries is removed by design, at the price of a few seconds on the rare ambiguous order.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Token bucket",
+      role: "Refills allowance at a steady rate up to a cap, letting short bursts through while holding the long-run pace under the broker limit.",
+    },
+    {
+      name: "Sliding window counter",
+      role: "Counts calls in the most recent period instead of a fixed clock minute, avoiding a double burst at the boundary between windows.",
+      dsa: "sliding-window",
+    },
+    {
+      name: "Exponential backoff with jitter",
+      role: "Doubles the wait after each failure with a random offset, so many clients retrying together do not hit the broker in step.",
+    },
+    {
+      name: "Circuit breaker with half-open probe",
+      role: "Stops calls after repeated failures and lets one trial request through later, so recovery is noticed without flooding a sick broker.",
     },
   ],
   insights: [

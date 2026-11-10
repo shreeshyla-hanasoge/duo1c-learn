@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdDeterminismReplay: Topic = {
   id: "sd-determinism-replay",
   title: "Determinism, event sourcing and replay",
-  tier: 3,
-  week: 6,
+  tier: 5,
+  week: 10,
   depth: "deep",
   summary:
     "If the same inputs always give the same outputs, you can replay a trading day to reproduce a bug. Hidden inputs break this; a recorded event log restores it.",
@@ -121,6 +121,20 @@ export const sdDeterminismReplay: Topic = {
       evidence: "docs/dev-tick-replay.md",
       impact:
         "Engine changes are verified end to end without touching the shared relay. The documented gap is tick order, because candles are replayed and raw ticks are not captured.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Append-only event log",
+      role: "Stores every input in order and never edits it, making the log the source of truth from which any day can be rebuilt.",
+    },
+    {
+      name: "Snapshot plus replay",
+      role: "Saves state at checkpoints and replays only later events, so reproducing a bug does not mean re-running the whole history.",
+    },
+    {
+      name: "Seeded pseudo-random generator",
+      role: "Makes random choices repeatable by fixing the seed, so a replayed run takes exactly the same path as the original.",
     },
   ],
   insights: [

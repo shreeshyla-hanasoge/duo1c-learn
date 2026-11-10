@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdCandleAggregation: Topic = {
   id: "sd-candle-aggregation",
   title: "Candle aggregation and windowing",
-  tier: 2,
-  week: 3,
+  tier: 5,
+  week: 10,
   depth: "deep",
   summary:
     "A candle is a tumbling window over ticks. The hard parts are deciding when it is closed, handling late ticks, and keeping live bars equal to historical ones.",
@@ -121,6 +121,22 @@ export const sdCandleAggregation: Topic = {
       evidence: "docs/engineering/multi-timeframe-indicators-plan.md",
       impact:
         "Backtest and live agree bar for bar, and signals on mixed timeframes move later, never earlier, when a lookahead is removed.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Tumbling window aggregation",
+      role: "Cuts the tick stream into fixed, non-overlapping intervals and folds each into one open, high, low, close and volume bar.",
+      dsa: "sliding-window",
+    },
+    {
+      name: "Ring buffer of recent bars",
+      role: "Keeps a fixed number of latest bars in constant memory, so indicators can read recent history without the store growing forever.",
+      dsa: "ring-buffers",
+    },
+    {
+      name: "Watermark for late ticks",
+      role: "Declares how long to wait for stragglers before a bar is closed, trading a small delay for fewer corrected bars.",
     },
   ],
   insights: [

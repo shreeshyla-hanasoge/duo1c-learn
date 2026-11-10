@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdIdempotency: Topic = {
   id: "sd-idempotency",
   title: "Idempotency and safe retries",
-  tier: 4,
-  week: 7,
+  tier: 5,
+  week: 9,
   depth: "deep",
   summary:
     "Networks fail halfway, so you retry, and a retry must not trade twice. Idempotency makes repeats safe; the broker's order book settles what already happened.",
@@ -121,6 +121,22 @@ export const sdIdempotency: Topic = {
       evidence: "CMS/Serverless/real-time-trading-websocket/src/handlers/subscribe.js (claimBridgeInvokeSlot); __tests__/unit/bridge-invoke-debounce.test.js",
       impact:
         "One bridge start per window instead of one per subscriber. A duplicate start is a small waste, so failing open is the right side to err on.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Idempotency key lookup",
+      role: "Stores the key of each request already handled and returns the earlier result for a repeat, so a retry cannot place a second order.",
+      dsa: "hashing",
+    },
+    {
+      name: "Deduplication by hash set",
+      role: "Remembers recently seen identifiers in a set with constant-time membership checks, discarding duplicates that at-least-once delivery produces.",
+      dsa: "hashing",
+    },
+    {
+      name: "Exponential backoff with jitter",
+      role: "Spaces the retries so a transient fault clears without a retry storm, while the idempotency key makes each retry safe.",
     },
   ],
   insights: [

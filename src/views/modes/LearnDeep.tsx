@@ -1,9 +1,12 @@
 import { motion } from "motion/react";
-import { Building2, FolderGit2, GitCompare, Layers, Sigma } from "lucide-react";
+import { ArrowUpRight, Binary, Building2, FolderGit2, GitCompare, Layers, Sigma } from "lucide-react";
 import type {
   LearnDeep as LearnDeepData,
   RealWorldCase,
 } from "../../data/curriculum";
+import type { AlgorithmRef } from "../../data/types";
+import { getSubject } from "../../data/subjects";
+import { href } from "../../lib/router";
 import { Card, SectionTitle } from "../../components/ui";
 import { Prose } from "../../components/Prose";
 import { itemVariants, spring } from "../../lib/ui";
@@ -198,6 +201,51 @@ export function RealWorld({ cases }: { cases: RealWorldCase[] }) {
                     </p>
                   )}
                 </div>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+    </motion.section>
+  );
+}
+
+/**
+ * The algorithms a design leans on, each linked to the DSA lesson that
+ * teaches it. A reference whose `dsa` id no longer exists renders without a
+ * link rather than a dead one.
+ */
+export function Algorithms({ items }: { items: AlgorithmRef[] }) {
+  const dsa = getSubject("dsa");
+  return (
+    <motion.section variants={itemVariants}>
+      <SectionTitle hint="the data structures doing the work">
+        Algorithms inside
+      </SectionTitle>
+      <div className="grid grid-cols-1 gap-2">
+        {items.map((a) => {
+          const lesson = a.dsa ? dsa.topicById.get(a.dsa) : undefined;
+          return (
+            <Card key={a.name} className="flex items-start gap-3 p-4">
+              <Binary size={15} className="mt-0.5 shrink-0 text-ink-3" />
+              <div className="min-w-0">
+                <h3 className="text-sm font-medium">{a.name}</h3>
+                <Prose
+                  linkTerms={false}
+                  className="mt-1 text-sm leading-relaxed text-ink-2"
+                >
+                  {a.role}
+                </Prose>
+                {lesson && (
+                  <a
+                    href={href({ name: "topic", id: lesson.id, mode: "learn" }, dsa.id)}
+                    className="mt-2 inline-flex items-center gap-1 text-xs"
+                    style={{ color: "var(--color-viz-cursor)" }}
+                  >
+                    Learn it in DSA: {lesson.title}
+                    <ArrowUpRight size={12} />
+                  </a>
+                )}
               </div>
             </Card>
           );

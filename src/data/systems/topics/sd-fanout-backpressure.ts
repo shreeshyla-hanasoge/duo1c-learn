@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdFanoutBackpressure: Topic = {
   id: "sd-fanout-backpressure",
   title: "Fan-out, pub/sub and backpressure",
-  tier: 2,
-  week: 3,
+  tier: 5,
+  week: 9,
   depth: "deep",
   summary:
     "One tick must reach many consumers. Fan-out multiplies work, and backpressure decides what happens when a consumer cannot keep up.",
@@ -121,6 +121,22 @@ export const sdFanoutBackpressure: Topic = {
       evidence: "strategy-engine/app/services/data_processing/direct_kite_ticker.py",
       impact:
         "Failures stay inside one strategy. It does not queue ticks, so a handler that blocks would still delay the next frame.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Topic-to-subscriber hash map",
+      role: "Looks up which connections want a symbol in constant time, so routing a tick costs the number of subscribers and nothing more.",
+      dsa: "hashing",
+    },
+    {
+      name: "Conflation to latest value per key",
+      role: "Replaces an unsent update for the same instrument with the newest one, so a slow consumer sees fresh prices instead of a growing backlog.",
+    },
+    {
+      name: "Bounded queue with drop policy",
+      role: "Caps how many messages may wait per consumer and decides what to discard, which turns an overload into a controlled loss.",
+      dsa: "stacks-queues",
     },
   ],
   insights: [

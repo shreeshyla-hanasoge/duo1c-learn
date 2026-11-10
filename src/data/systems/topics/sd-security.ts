@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdSecurity: Topic = {
   id: "sd-security",
   title: "Security: trust boundaries and secrets",
-  tier: 6,
-  week: 12,
+  tier: 8,
+  week: 16,
   depth: "deep",
   summary:
     "Who is calling, what may they do, and what if a key leaks. Authentication, authorisation, secrets, least privilege, and why broker keys raise the stakes.",
@@ -122,6 +122,21 @@ export const sdSecurity: Topic = {
       evidence: "CMS/trade-server/app/Http/Controllers/Api/BrokerCredentialsController.php",
       impact:
         "The feed receives the smallest credential that lets it work, and it goes stale by itself within a day.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "HMAC signature check",
+      role: "Proves a request came from a holder of the shared secret and was not altered, without ever sending the secret itself.",
+    },
+    {
+      name: "Hash function",
+      role: "Turns a password or token into a fixed-size digest, so a stolen table of stored values does not reveal the originals.",
+      dsa: "hashing",
+    },
+    {
+      name: "JWT signature and expiry check",
+      role: "Verifies a signed token and its expiry claim on each call, so access ends on time without a database lookup.",
     },
   ],
   insights: [

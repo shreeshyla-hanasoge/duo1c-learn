@@ -54,6 +54,12 @@ export interface ConceptFilm {
   title: string;
   /** One observation prompt; the film should not duplicate the lesson prose. */
   watchFor: string;
+  /**
+   * `metaphor` (the default) is an image that builds intuition. `flow` is a
+   * literal diagram film — one message followed through a system — built
+   * from a spec in `films/`.
+   */
+  kind?: "metaphor" | "flow";
 }
 
 /** Where this structure earns its keep in a system somebody actually ships. */
@@ -206,6 +212,20 @@ export interface Topic {
   lab?: CodeLab;
   /** Tier 5 only — the judgment-tier stand-in for `lab`. */
   cases?: DecisionCase[];
+  /**
+   * The named algorithms and data structures a design leans on. A system
+   * design lesson says "use a Bloom filter"; the DSA subject teaches how to
+   * build one. `dsa` is a topic id in the DSA subject and renders as a link.
+   */
+  algorithms?: AlgorithmRef[];
+}
+
+export interface AlgorithmRef {
+  name: string;
+  /** What job it does in THIS design, in one sentence. */
+  role: string;
+  /** A topic id in the DSA subject, when one teaches it. */
+  dsa?: string;
 }
 
 /**

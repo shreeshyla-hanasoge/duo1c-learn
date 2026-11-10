@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdBrokerAdapters: Topic = {
   id: "sd-broker-adapters",
   title: "Broker adapters and token lifecycles",
-  tier: 4,
-  week: 8,
+  tier: 9,
+  week: 18,
   depth: "deep",
   summary:
     "An adapter gives every broker one internal vocabulary, so the engine never learns Kite or Groww quirks. Daily-expiring tokens are the other half of the problem.",
@@ -123,6 +123,21 @@ export const sdBrokerAdapters: Topic = {
         "strategy-engine/src/brokers/trading_interface.py; strategy-engine/src/brokers/factory.py; docs/LLD.md (section 7)",
       impact:
         "A strategy running across the morning rotation can still place its exit orders.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Adapter pattern",
+      role: "Translates each broker's own request and response shapes into one internal vocabulary, so the engine never learns Kite or Groww quirks.",
+    },
+    {
+      name: "Token lifecycle state machine",
+      role: "Models a daily-expiring access token as explicit states such as valid, expired and refreshing, so the code never treats it as a constant.",
+    },
+    {
+      name: "Registry lookup by broker name",
+      role: "Maps a broker identifier to the correct adapter instance in constant time, so adding a broker means adding one entry.",
+      dsa: "hashing",
     },
   ],
   insights: [

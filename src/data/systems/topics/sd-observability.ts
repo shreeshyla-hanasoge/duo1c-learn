@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdObservability: Topic = {
   id: "sd-observability",
   title: "Observability: logs, metrics and alerts",
-  tier: 5,
-  week: 9,
+  tier: 7,
+  week: 14,
   depth: "deep",
   summary:
     "Logs say what happened, metrics say how much, alerts say look now. Alert on symptoms a user would feel, with thresholds that can fire at your scale.",
@@ -114,6 +114,22 @@ export const sdObservability: Topic = {
         "The stalled threshold is now one expected interval plus a 300 second grace, never below 900 seconds. The feed-silent flag applies to a symbol only while its own session is open, with 120 seconds as the limit. The report also counts three rejections per hour with the same reason as a spike.",
       evidence: "strategy-engine/app/api/api_v1/endpoints/ops.py",
       impact: "Alerts match what a minute-bar and an hour-bar strategy can legitimately do, so a page means something.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Counter, gauge and histogram",
+      role: "Three metric shapes that count events, show a current level and record a distribution, from which rates and percentiles are derived.",
+    },
+    {
+      name: "Sliding-window rate",
+      role: "Turns a running counter into a rate over the last few minutes, which is what a useful alert threshold is written against.",
+      dsa: "sliding-window",
+    },
+    {
+      name: "Count-min sketch for high-cardinality counts",
+      role: "Counts many distinct labels in fixed memory with a small overcount, so metrics do not blow up when label values multiply.",
+      dsa: "probabilistic",
     },
   ],
   insights: [

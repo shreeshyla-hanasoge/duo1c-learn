@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdReconciliation: Topic = {
   id: "sd-reconciliation",
   title: "Reconciliation: the broker is the truth",
-  tier: 4,
-  week: 7,
+  tier: 9,
+  week: 18,
   depth: "deep",
   summary:
     "Your platform keeps its own book of positions; the broker keeps the real one. Reconciliation compares them, classifies the gaps and decides what to repair.",
@@ -121,6 +121,23 @@ export const sdReconciliation: Topic = {
       evidence: "docs/incidents/2026-07-16-paper-position-never-exited.md; docs/live-readiness.md (LR-25)",
       impact:
         "It shows why an internal book needs an outside check: a silent loss of state looked like 'nothing to exit'.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Set difference by hash join",
+      role: "Matches your positions against the broker's by instrument key, so missing, extra and mismatched rows fall out of one pass.",
+      dsa: "hashing",
+    },
+    {
+      name: "Sort-merge comparison",
+      role: "Walks two sorted lists side by side to compare large books in order without building a lookup table for either.",
+      dsa: "sorting",
+    },
+    {
+      name: "Checksum of a book",
+      role: "Reduces a whole position list to one hash so a cheap equality test can say there is nothing to repair.",
+      dsa: "hashing",
     },
   ],
   insights: [

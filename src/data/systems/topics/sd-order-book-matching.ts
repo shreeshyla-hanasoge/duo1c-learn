@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdOrderBookMatching: Topic = {
   id: "sd-order-book-matching",
   title: "Order books and matching engines",
-  tier: 1,
-  week: 2,
+  tier: 6,
+  week: 12,
   depth: "deep",
   summary:
     "An exchange matches buyers and sellers by price, then arrival time. Fills come from the order book, so a backtest that ignores the book flatters itself.",
@@ -123,6 +123,23 @@ export const sdOrderBookMatching: Topic = {
         "strategy-engine/app/services/execution_modes/order_executors.py; strategy-engine/app/services/universal_strategy_executor.py",
       impact:
         "Entries cannot pay more than the cap in a thin book, and exits keep widening until the position is closed.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Price-time priority queue",
+      role: "Orders resting at a price are served by arrival time, and the best price is always at the front of the line.",
+      dsa: "heaps",
+    },
+    {
+      name: "Balanced tree of price levels",
+      role: "Keeps price levels sorted so the best bid and ask are found fast and a new level is inserted in logarithmic time.",
+      dsa: "balanced-trees",
+    },
+    {
+      name: "Hash map from order id to book entry",
+      role: "Finds a resting order directly for cancel or amend instead of scanning the book, keeping cancellations cheap.",
+      dsa: "hashing",
     },
   ],
   insights: [

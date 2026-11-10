@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdStateMachines: Topic = {
   id: "sd-state-machines",
   title: "State machines for strategies and orders",
-  tier: 3,
-  week: 5,
+  tier: 8,
+  week: 16,
   depth: "deep",
   summary:
     "A state machine lists the states a thing can be in and the moves allowed between them, so a wrong move is caught as a bug and not saved as data.",
@@ -118,6 +118,21 @@ export const sdStateMachines: Topic = {
         "Five states, three terminal. Cancelling and the crash handler both check that the row is not already terminal before changing it. The worker refuses to start a job already cancelled, and the page stops polling once it sees a terminal state.",
       evidence: "strategy-engine/app/services/backtest_control.py; strategy-engine/app/services/backtest_dispatch.py; docs/LLD.md",
       impact: "A finished backtest cannot be flipped to failed by a late crash message, and a stuck page can recover from the database.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Finite state machine",
+      role: "Lists the allowed states and moves explicitly, so an illegal transition is rejected as a bug instead of being stored as data.",
+    },
+    {
+      name: "Transition table lookup",
+      role: "Stores allowed moves as a map from current state and event to next state, making the rules visible and testable in one place.",
+      dsa: "hashing",
+    },
+    {
+      name: "Derived state from stored facts",
+      role: "Computes the status from timestamps and counts already saved rather than keeping a separate column that can disagree with them.",
     },
   ],
   insights: [

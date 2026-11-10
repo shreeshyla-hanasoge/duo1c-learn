@@ -262,40 +262,52 @@ in `TRADING_BADGES`. The writing brief for the first module, with the evidence r
 `docs/trading/writing-brief.md`; sources and their reliability labels are in
 `docs/trading/sources.md`.
 
-### Trading system design
+### System design
 
-The third subject (`system-design`): system design taught through financial markets and one
-worked example, Traed. Content lives in `src/data/systems/`: `curriculum.ts` (six modules
-with their orientations, the 12-week `PHASES`, resources), `topics/<id>.ts` (one file per
-lesson, ids prefixed `sd-`), `glossary.ts`. **34 topics · 272 quiz questions · 102 decision
-cases.** No visualisers and no labs — like DSA's Tier 5, every topic's Solve gate is
-`cases[]`.
+The third subject (`system-design`): standard system design and the algorithms inside it,
+taught with real cases. It began as 34 lessons drawn from how Traed (the reader's own
+trading platform) is built, and was then broadened to the full canon; Traed is now one
+recurring example, and module 9 is the domain module about it.
 
-Every module sets `entry: true`, so all six are open from the start; the order is a
-suggestion. `copy.derivationTitle` is "Why this design holds", and the last `mechanics`
-entry of every topic is headed "Saying it about Traed" — a short spoken-style account of
-what Traed does, why, and what it gives up.
+Content lives in `src/data/systems/`: `curriculum.ts` (ten modules with their orientations,
+the 20-week `PHASES`, resources), `topics/<id>.ts` (one file per lesson, ids prefixed
+`sd-`), `glossary.ts`, and the generated `films.ts`. **69 topics · 552 quiz questions · 207
+decision cases · 69 data-flow films.** No visualisers and no labs — like DSA's Tier 5,
+every topic's Solve gate is `cases[]`. Every module sets `entry: true`, so all ten are open
+from the start.
 
-The brief, with the content rules (nothing invented, every Traed claim checked against the
-Traed repository, nothing sensitive because the site is public) and the per-topic scope, is
-[docs/systems/writing-brief.md](./systems/writing-brief.md). The countable rules are
-enforced by a checker, which is not optional after touching a topic:
+Three things are particular to this subject:
+
+- **`algorithms`** on each topic names the algorithms and data structures the design leans
+  on and links each to its DSA lesson (`dsa: "<topic id>"`). `Learn` renders them as
+  "Algorithms inside". This is the bridge between the two subjects: system design says
+  "use a Bloom filter", DSA teaches how to build one.
+- **The last `mechanics` entry** is headed "Saying it about Traed" (the 34 original lessons:
+  what Traed does, why, what it gives up) or "In Traed's terms" (the 35 canon lessons: how
+  the idea maps onto a one-server platform, often "not needed yet, because…").
+- **Data-flow films.** Each lesson has a short, silent, captioned video that follows one
+  message through the system. A film is a spec in `films/src/specs/<id>.ts` rendered by one
+  Remotion template; `films/scripts/sync.mts` writes `src/data/systems/films.ts`, and
+  `curriculum.ts` attaches each entry as the topic's `conceptFilm` (`kind: "flow"`, which
+  `Learn` titles "Watch the flow"). Topic files never mention films. See
+  [films/README.md](../films/README.md).
+
+The brief — content rules (nothing invented, every Traed claim checked against the Traed
+repository, nothing sensitive because the site is public) and the per-topic scope — is
+[docs/systems/writing-brief.md](./systems/writing-brief.md). The countable rules are enforced
+by two checkers, neither optional after touching a topic or a spec:
 
 ```bash
-node --experimental-strip-types scripts/systems-check.mts            # all topics
-node --experimental-strip-types scripts/systems-check.mts sd-caching # just these
+node --experimental-strip-types scripts/systems-check.mts [ids…]                    # lessons
+cd films && node --experimental-strip-types scripts/check.mts [ids…]                # film specs
+cd films && ./scripts/render.sh [ids…]                                              # render + wire in
 ```
 
-Traed changes, so these lessons go stale in a way DSA's do not. Where the Traed code and
-its own docs disagreed at the time of writing (November 2026), the lessons follow the code.
-The whole subject adds about 1 MB to the main bundle (about 300 kB gzipped); loading a
-subject's topics lazily is the natural fix if that starts to matter.
-
-After touching anything under `engine/trading/` or a trading scenario:
-
-```bash
-node --experimental-strip-types scripts/profile-check.mts   # maths vs Emberwick, worked example, every scenario's claim
-```
+Traed changes, so the lessons that describe it go stale in a way DSA's do not. Where the
+Traed code and its own docs disagreed at the time of writing (November 2026), the lessons
+follow the code. The subject adds about 2 MB to the main bundle (about 600 kB gzipped);
+loading a subject's topics lazily is the natural fix. The films are about 50 MB of video in
+`public/media/concept-films/`.
 
 ## 5. Auditing coverage
 

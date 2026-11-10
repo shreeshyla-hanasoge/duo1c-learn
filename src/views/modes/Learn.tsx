@@ -10,7 +10,7 @@ import { itemVariants, listVariants, cn, spring } from "../../lib/ui";
 import { useProgress, useTopicProgress } from "../../store/progress";
 import type { Subject } from "../../data/subjects";
 import { celebrate, xpToast } from "../../lib/toast";
-import { DeepSections, RealWorld } from "./LearnDeep";
+import { Algorithms, DeepSections, RealWorld } from "./LearnDeep";
 
 export function Learn({ subject, topic }: { subject: Subject; topic: Topic }) {
   const learned = useTopicProgress(subject.id, topic.id)?.learned ?? false;
@@ -103,6 +103,9 @@ export function Learn({ subject, topic }: { subject: Subject; topic: Topic }) {
       )}
 
       {topic.learn && <DeepSections learn={topic.learn} />}
+      {topic.algorithms && topic.algorithms.length > 0 && (
+        <Algorithms items={topic.algorithms} />
+      )}
       {topic.realWorld && topic.realWorld.length > 0 && (
         <RealWorld cases={topic.realWorld} />
       )}
@@ -222,8 +225,14 @@ function ConceptFilm({
 
   return (
     <motion.section variants={itemVariants}>
-      <SectionTitle hint="a visual metaphor, not a literal simulation">
-        See the idea
+      <SectionTitle
+        hint={
+          film.kind === "flow"
+            ? "one message, followed through the system"
+            : "a visual metaphor, not a literal simulation"
+        }
+      >
+        {film.kind === "flow" ? "Watch the flow" : "See the idea"}
       </SectionTitle>
       <Card className="overflow-hidden p-0">
         <div className="aspect-video bg-black">

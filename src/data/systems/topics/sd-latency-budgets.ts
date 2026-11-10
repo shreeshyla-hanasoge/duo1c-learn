@@ -127,6 +127,22 @@ export const sdLatencyBudgets: Topic = {
         "A hop that had been fine on average, and failed in the tail, was taken out of the path that matters.",
     },
   ],
+  algorithms: [
+    {
+      name: "Percentile estimation (p50, p99)",
+      role: "Reads latency from the slow tail of the distribution rather than the mean, which is where users and stop-loss exits actually suffer.",
+      dsa: "approximation",
+    },
+    {
+      name: "HDR histogram",
+      role: "Records latencies in buckets with bounded relative error, so tail percentiles stay cheap to store and accurate enough to alert on.",
+    },
+    {
+      name: "Sliding-window percentile",
+      role: "Computes percentiles over only the last few minutes, so a recent regression is visible and not buried under old good samples.",
+      dsa: "sliding-window",
+    },
+  ],
   insights: [
     {
       t: "Budget the path, not the hop",

@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdEventLoop: Topic = {
   id: "sd-event-loop",
   title: "Event-driven design and the single writer",
-  tier: 3,
-  week: 5,
+  tier: 5,
+  week: 10,
   depth: "deep",
   summary:
     "A trading engine waits for events instead of asking for them. One thread that owns all the state needs no locks, as long as nothing in it ever blocks.",
@@ -120,6 +120,23 @@ export const sdEventLoop: Topic = {
       evidence: "strategy-engine/app/services/backtest_dispatch.py",
       impact:
         "A crashed or memory-hungry backtest cannot starve the live loop. The price is one backtest at a time on this box.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Event loop with a FIFO queue",
+      role: "Takes one event at a time from a queue on one thread, so state needs no locks and ordering is simple to reason about.",
+      dsa: "stacks-queues",
+    },
+    {
+      name: "Min-heap timer queue",
+      role: "Keeps scheduled callbacks ordered by due time, so the loop knows how long it may sleep and which timer fires next.",
+      dsa: "heaps",
+    },
+    {
+      name: "Single-writer principle",
+      role: "Lets exactly one thread mutate shared state, removing data races by construction rather than by careful locking.",
+      dsa: "concurrency",
     },
   ],
   insights: [

@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdConsistency: Topic = {
   id: "sd-consistency",
   title: "Consistency: what must agree, and when",
-  tier: 6,
-  week: 11,
+  tier: 3,
+  week: 6,
   depth: "deep",
   summary:
     "Every fact needs one owner, and every copy must be rebuildable or reconciled. Pay for strong guarantees only where a wrong value costs money.",
@@ -121,6 +121,21 @@ export const sdConsistency: Topic = {
       evidence: "strategy-engine/app/services/live_reconciliation.py",
       impact:
         "The broker is treated as the owner of the truth. The delay before alerting trades a little speed for far fewer false alarms right after a fill.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Outbox pattern",
+      role: "Writes the change and the message to publish in one database transaction, so two systems cannot disagree because a second write was lost.",
+    },
+    {
+      name: "Set difference by hash join",
+      role: "Compares two copies of the same facts by key to find what is missing or different, which is how drift gets detected and repaired.",
+      dsa: "hashing",
+    },
+    {
+      name: "Read-your-writes via version check",
+      role: "Compares a version or timestamp on read, so a user who just wrote never sees an older copy from a lagging replica.",
     },
   ],
   insights: [

@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdArchitectureStory: Topic = {
   id: "sd-architecture-story",
   title: "Telling the architecture story",
-  tier: 6,
-  week: 12,
+  tier: 10,
+  week: 20,
   depth: "deep",
   summary:
     "Explain a system in two minutes: audience, context, containers, one flow, two trade-offs and limits, with decisions written down and why-not answers ready.",
@@ -121,6 +121,16 @@ export const sdArchitectureStory: Topic = {
       evidence: "docs/plans/backup-restore-design.md",
       impact:
         "A future reader can see not only what was chosen but what was considered and refused, which is what answers a 'why not X?' question.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Layered zoom (C4 levels)",
+      role: "Structures the explanation as context, then containers, then one flow, so each listener sees only as much detail as they need at that moment.",
+    },
+    {
+      name: "Architecture decision record",
+      role: "Captures each decision as context, choice and consequences in a short dated note, so the why-not-X answer survives after the people who made it have moved on.",
     },
   ],
   insights: [

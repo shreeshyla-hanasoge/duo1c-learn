@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdFeedIngestion: Topic = {
   id: "sd-feed-ingestion",
   title: "Feed handlers and tick ingestion",
-  tier: 2,
-  week: 3,
+  tier: 5,
+  week: 9,
   depth: "deep",
   summary:
     "A feed handler holds one long-lived socket, decodes binary frames, maps tokens to your names, and survives reconnects without losing its subscriptions.",
@@ -121,6 +121,22 @@ export const sdFeedIngestion: Topic = {
       evidence: "docs/incidents/2026-11-09-ticker-alias-silent-feed.md",
       impact:
         "Feed health is kept per symbol string, so the silence was visible; the fix removed its cause. Names, not sockets, were the unit that failed.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Binary frame parsing",
+      role: "Reads fixed-width fields at known offsets from each packet, which is far cheaper than parsing text and keeps pace with the feed.",
+      dsa: "bit-manipulation",
+    },
+    {
+      name: "Token-to-symbol lookup table",
+      role: "Maps the broker's numeric instrument token to your internal name in constant time for every tick, and flags collisions.",
+      dsa: "hashing",
+    },
+    {
+      name: "Exponential backoff with jitter",
+      role: "Spaces reconnect attempts further apart with a random offset, so a dropped feed recovers without many clients hammering the broker together.",
     },
   ],
   insights: [

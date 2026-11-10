@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdFailureModes: Topic = {
   id: "sd-failure-modes",
   title: "Failure modes: fail open or fail closed",
-  tier: 5,
-  week: 9,
+  tier: 7,
+  week: 13,
   depth: "deep",
   summary:
     "Every dependency will fail. Decide in advance, per dependency and per action, whether the system stops (fail closed) or carries on (fail open).",
@@ -115,6 +115,20 @@ export const sdFailureModes: Topic = {
         "The trip is now written to MySQL. A live strategy with a loss limit whose ledger cannot be read keeps entries blocked and retries. A strategy with no limit trades as before and raises a warning. Exits are never blocked.",
       evidence: "strategy-engine/app/services/risk_breaker.py (module docstring)",
       impact: "A lost cache no longer silently lets a strategy that has used up its loss budget open new positions.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Timeout with deadline propagation",
+      role: "Bounds how long any call may wait and passes the remaining budget downstream, so one slow dependency cannot hold everything else hostage.",
+    },
+    {
+      name: "Fail-closed and fail-open decision table",
+      role: "Records, per dependency and action, whether to stop or carry on, so the choice is made calmly in advance instead of during an outage.",
+    },
+    {
+      name: "Bulkhead",
+      role: "Gives each dependency its own limited pool of resources, so a failure in one cannot exhaust the capacity the others need.",
     },
   ],
   insights: [

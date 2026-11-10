@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdCostCapacity: Topic = {
   id: "sd-cost-capacity",
   title: "Cost and capacity: doing the arithmetic",
-  tier: 6,
-  week: 12,
+  tier: 1,
+  week: 2,
   depth: "deep",
   summary:
     "Find the unit that multiplies, count it, find what fills first, and decide whether to own capacity or rent it. Order-of-magnitude arithmetic beats a guess.",
@@ -122,6 +122,20 @@ export const sdCostCapacity: Topic = {
       evidence: "CMS/Serverless/real-time-trading-websocket/src/handlers/bridge.js",
       impact:
         "The paid part of the platform is busy only when the exchange is, which is the fixed utilisation the arithmetic predicts.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Back-of-envelope estimation",
+      role: "Multiplies the unit that grows by cost per unit to get an order-of-magnitude bill or load before anything is built.",
+    },
+    {
+      name: "Little's law",
+      role: "Relates arrival rate, time in system and concurrency, so you can tell how many workers or connections are needed for a given load.",
+    },
+    {
+      name: "Step-function cost model",
+      role: "Treats price as jumping at tiers and free-tier limits, so an alarm can fire before a threshold turns a cheap month into an expensive one.",
     },
   ],
   insights: [

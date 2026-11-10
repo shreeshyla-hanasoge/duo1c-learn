@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdServiceBoundaries: Topic = {
   id: "sd-service-boundaries",
   title: "Service boundaries: monolith, services and the shared database",
-  tier: 6,
-  week: 11,
+  tier: 8,
+  week: 15,
   depth: "deep",
   summary:
     "A boundary costs a network call, a version contract and a new way to fail. Draw one only where deploy, scale, failure or ownership truly differ.",
@@ -121,6 +121,18 @@ export const sdServiceBoundaries: Topic = {
       evidence: "ARCHITECTURE.md",
       impact:
         "No data API to maintain at one server and one user, in exchange for an implicit schema contract.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Dependency graph and cycle detection",
+      role: "Treats services and modules as a directed graph, so a circular dependency shows up as a cycle that should not exist.",
+      dsa: "graph-representations",
+    },
+    {
+      name: "Topological ordering of deploys",
+      role: "Orders releases so a dependency is deployed before whatever calls it, which is the real cost hidden in every new boundary.",
+      dsa: "toposort",
     },
   ],
   insights: [

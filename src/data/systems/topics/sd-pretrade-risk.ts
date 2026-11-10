@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdPretradeRisk: Topic = {
   id: "sd-pretrade-risk",
   title: "Pre-trade risk and kill switches",
-  tier: 4,
-  week: 8,
+  tier: 9,
+  week: 18,
   depth: "deep",
   summary:
     "Risk checks sit between signal and broker, outside strategy code, so one bug cannot size or fund its own order. Plus sticky loss stops and a manual exit.",
@@ -123,6 +123,21 @@ export const sdPretradeRisk: Topic = {
         "strategy-engine/app/services/risk_breaker.py; strategy-engine/app/services/position_square_off.py; docs/live-readiness.md",
       impact:
         "A limit that evaporates on restart is not a limit. This one survives deploys and cache loss.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Chain of responsibility",
+      role: "Runs the checks in a fixed order and stops at the first failure, so cheap tests go first and every refusal has one named reason.",
+    },
+    {
+      name: "Sticky circuit breaker",
+      role: "Trips on a loss limit and stays tripped until a person resets it, so a bad day cannot quietly re-arm itself.",
+    },
+    {
+      name: "Running total with a sliding window",
+      role: "Keeps the day's realised loss and recent order counts up to date incrementally, so each check is constant time.",
+      dsa: "sliding-window",
     },
   ],
   insights: [

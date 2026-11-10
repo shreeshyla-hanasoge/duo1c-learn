@@ -3,8 +3,8 @@ import type { Topic } from "../../types.ts";
 export const sdCrashRecovery: Topic = {
   id: "sd-crash-recovery",
   title: "Crash recovery and durable state",
-  tier: 5,
-  week: 9,
+  tier: 7,
+  week: 14,
   depth: "deep",
   summary:
     "A process can die at any second. Know which state lives in memory, a cache, a database and the broker, and rebuild the right copy on start-up.",
@@ -116,6 +116,21 @@ export const sdCrashRecovery: Topic = {
       evidence:
         "strategy-engine/app/services/backtest_recovery.py; docs/incidents/2026-07-16-paper-position-never-exited.md",
       impact: "Orphaned runs finish by themselves, and an open position is rehydrated after a restart.",
+    },
+  ],
+  algorithms: [
+    {
+      name: "Write-ahead log with snapshots",
+      role: "Records every change before applying it and checkpoints occasionally, so a restart loads the snapshot and replays only the tail.",
+    },
+    {
+      name: "Durable mirror rebuild",
+      role: "Rebuilds the fast in-memory copy from the durable table on start, treating the database as the record and the cache as a disposable view.",
+    },
+    {
+      name: "Set difference against the broker",
+      role: "Compares the rebuilt positions with the broker's list to find orphans on either side before trading resumes.",
+      dsa: "hashing",
     },
   ],
   insights: [
